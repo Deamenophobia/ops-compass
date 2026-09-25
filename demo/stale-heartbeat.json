@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "source": "demo",
+  "observations": [
+    {
+      "id": "sample-gateway",
+      "entityRef": "component:default/api-gateway",
+      "label": "Gateway readiness",
+      "environment": "demo",
+      "region": "eu-west-1",
+      "state": "healthy",
+      "observedAt": "2026-09-25T00:00:00.000Z",
+      "summary": "Synthetic readiness probe returned 200. No AWS request was made."
+    },
+    {
+      "id": "sample-disk",
+      "entityRef": "resource:default/sample-host",
+      "label": "Root disk capacity",
+      "environment": "demo",
+      "region": "eu-west-1",
+      "state": "warning",
+      "observedAt": "2026-09-25T00:00:00.000Z",
+      "summary": "Synthetic root disk usage is 84%; demonstration warning threshold is 80%."
+    },
+    {
+      "id": "sample-backup",
+      "entityRef": "component:default/order-service",
+      "label": "Backup verification",
+      "environment": "demo",
+      "region": "eu-west-1",
+      "state": "healthy",
+      "observedAt": "2026-09-24T23:00:00.000Z",
+      "summary": "Synthetic observation is one hour old. A past success is not a current backup guarantee."
+    }
+  ],
+  "services": [
+    {
+      "id": "gateway",
+      "name": "API Gateway",
+      "entityRef": "component:default/api-gateway",
+      "host": "demo-edge-host",
+      "region": "eu-west-1",
+      "environment": "demo",
+      "observedAt": "2026-09-25T00:00:00.000Z",
+      "containers": [
+        {
+          "name": "gateway",
+          "image": "example/gateway:1.4.2",
+          "imageId": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "revision": "c1a55edc1a55edc1a55edc1a55edc1a55edc1a55ed0",
+          "state": "running",
+          "health": "passing",
+          "restartCount": 0,
+          "startedAt": "2026-09-24T00:00:00.000Z",
+          "observedAt": "2026-09-25T00:00:00.000Z"
+        },
+        {
+          "name": "gateway-metrics",
+          "image": "example/gateway-metrics:1.4.2",
+          "imageId": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "revision": "c1a55edc1a55edc1a55edc1a55edc1a55edc1a55ed0",
+          "state": "running",
+          "health": "passing",
+          "restartCount": 0,
+          "startedAt": "2026-09-24T00:00:00.000Z",
+          "observedAt": "2026-09-25T00:00:00.000Z"
+        }
+      ],
+      "heartbeat": {
+        "lastSeenAt": "2026-09-24T23:59:40.000Z",
+        "maxAgeSeconds": 60
+      },
+      "certificate": {
+        "hostname": "portal.example.com",
+        "checkedAt": "2026-09-25T00:00:00.000Z",
+        "expiresAt": "2026-10-05T00:00:00.000Z"
+      }
+    },
+    {
+      "id": "market-worker",
+      "name": "Market data worker",
+      "entityRef": "component:default/market-worker",
+      "host": "demo-worker-host",
+      "region": "eu-west-1",
+      "environment": "demo",
+      "observedAt": "2026-09-25T00:00:00.000Z",
+      "containers": [
+        {
+          "name": "market-reader",
+          "image": "example/market-reader:0.8.0",
+          "imageId": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "revision": "c1a55edc1a55edc1a55edc1a55edc1a55edc1a55ed0",
+          "state": "running",
+          "health": "passing",
+          "restartCount": 0,
+          "startedAt": "2026-09-24T00:00:00.000Z",
+          "observedAt": "2026-09-25T00:00:00.000Z"
+        },
+        {
+          "name": "signal-worker",
+          "image": "example/signal-worker:0.8.0",
+          "imageId": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "revision": "c1a55edc1a55edc1a55edc1a55edc1a55edc1a55ed0",
+          "state": "running",
+          "health": "passing",
+          "restartCount": 0,
+          "startedAt": "2026-09-24T00:00:00.000Z",
+          "observedAt": "2026-09-25T00:00:00.000Z"
+        },
+        {
+          "name": "worker-metrics",
+          "image": "example/worker-metrics:0.8.0",
+          "imageId": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "revision": "c1a55edc1a55edc1a55edc1a55edc1a55edc1a55ed0",
+          "state": "running",
+          "health": "passing",
+          "restartCount": 0,
+          "startedAt": "2026-09-24T00:00:00.000Z",
+          "observedAt": "2026-09-25T00:00:00.000Z"
+        }
+      ],
+      "heartbeat": {
+        "lastSeenAt": "2026-09-24T23:50:00.000Z",
+        "maxAgeSeconds": 60
+      }
+    }
+  ],
+  "deployments": [
+    {
+      "serviceId": "gateway",
+      "project": "examples/gateway",
+      "ref": "main",
+      "sha": "f00d123f00d123f00d123f00d123f00d123f00d1230",
+      "status": "success",
+      "webUrl": "https://gitlab.example.com/examples/gateway/-/pipelines/42",
+      "updatedAt": "2026-09-24T23:55:00.000Z",
+      "observedAt": "2026-09-25T00:00:00.000Z"
+    },
+    {
+      "serviceId": "market-worker",
+      "project": "examples/market-worker",
+      "ref": "main",
+      "sha": "c1a55edc1a55edc1a55edc1a55edc1a55edc1a55ed0",
+      "status": "success",
+      "webUrl": "https://gitlab.example.com/examples/market-worker/-/pipelines/42",
+      "updatedAt": "2026-09-24T23:55:00.000Z",
+      "observedAt": "2026-09-25T00:00:00.000Z"
+    }
+  ],
+  "budget": {
+    "name": "Demonstration monthly budget",
+    "currency": "USD",
+    "limit": 75,
+    "actual": 42.5,
+    "forecast": 82,
+    "updatedAt": "2026-09-01T00:00:00.000Z",
+    "observedAt": "2026-09-25T00:00:00.000Z"
+  }
+}

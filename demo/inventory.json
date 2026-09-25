@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "source": "demo",
+  "collectedAt": "2026-09-25T00:00:00.000Z",
+  "coverage": [
+    {
+      "region": "eu-west-1",
+      "status": "available",
+      "detail": "Synthetic EC2 examples only. No AWS request was made."
+    },
+    {
+      "region": "eu-west-2",
+      "status": "unavailable",
+      "detail": "Synthetic missing coverage. No result is inferred."
+    }
+  ],
+  "instances": [
+    {
+      "instanceId": "i-00000000000000001",
+      "accountId": "000000000000",
+      "region": "eu-west-1",
+      "name": "Demo gateway host",
+      "instanceType": "t3.small",
+      "state": "running",
+      "observedAt": "2026-09-25T00:00:00.000Z",
+      "serviceIds": ["gateway"],
+      "monitoring": "disabled"
+    },
+    {
+      "instanceId": "i-00000000000000002",
+      "accountId": "000000000000",
+      "region": "eu-west-1",
+      "name": "Demo worker host",
+      "instanceType": "t3.medium",
+      "state": "running",
+      "observedAt": "2026-09-25T00:00:00.000Z",
+      "serviceIds": ["market-worker"],
+      "monitoring": "enabled"
+    }
+  ]
+}

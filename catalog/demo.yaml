@@ -1,0 +1,65 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: sample-commerce
+  description: Spring Cloud reference workload; catalog registration does not imply deployment.
+spec:
+  owner: platform-owner
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: sample-host
+  description: Example AWS compute resource, not a provisioned instance.
+spec:
+  type: compute
+  owner: platform-owner
+  system: sample-commerce
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: api-gateway
+  title: API Gateway
+  description: Reference Spring Cloud entry point. Runtime demo data is synthetic.
+spec:
+  type: service
+  owner: platform-owner
+  lifecycle: experimental
+  system: sample-commerce
+  dependsOn: [component:default/catalog-service, component:default/order-service]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: catalog-service
+  description: Reference product catalog service.
+spec:
+  type: service
+  owner: platform-owner
+  lifecycle: experimental
+  system: sample-commerce
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: order-service
+  description: Reference order service with a synthetic backup observation.
+spec:
+  type: service
+  owner: platform-owner
+  lifecycle: experimental
+  system: sample-commerce
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: market-worker
+  title: Market data worker
+  description: Synthetic multi-container worker for heartbeat and runtime demonstrations. It does not place trades.
+spec:
+  type: service
+  owner: platform-owner
+  lifecycle: experimental
+  system: sample-commerce
+  dependsOn: [resource:default/sample-host]

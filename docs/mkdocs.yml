@@ -8,6 +8,7 @@ nav:
       - Local setup: guides/local-setup.md
       - Choose features: guides/features.md
       - User manual: guides/user-manual.md
+      - Illustrated walkthrough: guides/demo-gallery.md
   - Configure sources:
       - Connections: guides/connections.md
       - Workspace providers: guides/workspace-setup.md

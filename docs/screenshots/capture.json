@@ -1,0 +1,207 @@
+{
+  "capturedAt": "2026-09-25T09:14:28.503Z",
+  "baseURL": "http://localhost:7007",
+  "source": "demo",
+  "fixtureSha256": "e9cf5d701e6748b988f3ffa2c44b97a3aac0f4f8d0f67e7b01f87dd41e364cfd",
+  "captures": [
+    {
+      "file": "01-operations.png",
+      "scenario": "Synthetic overview with container, heartbeat and certificate checks"
+    },
+    {
+      "file": "02-needs-attention.png",
+      "scenario": "Search, attention filter and a browser-saved Disk review view"
+    },
+    {
+      "file": "09-service-workspace.png",
+      "scenario": "Gateway containers, image/revision, health, restarts, heartbeat and pipeline difference"
+    },
+    {
+      "file": "10-worker-containers.png",
+      "scenario": "Three synthetic worker containers and a separate heartbeat"
+    },
+    {
+      "file": "19-unhealthy-container.png",
+      "scenario": "Running gateway with failing health and seven restarts"
+    },
+    {
+      "file": "11-operations-history.png",
+      "scenario": "Persistent gateway health events with recording and observation times"
+    },
+    {
+      "file": "12-reviewed-worklog.png",
+      "scenario": "Cited deterministic draft, review field, saved record and Markdown export"
+    },
+    {
+      "file": "13-email-configuration.png",
+      "scenario": "Blank email configuration with persistent queue and simulated history",
+      "capturedAt": "2026-09-25T10:25:32.192Z"
+    },
+    {
+      "file": "14-email-receipt.png",
+      "scenario": "Restarted worker completed the synthetic test; human receipt confirmation remains separate",
+      "capturedAt": "2026-09-25T10:29:24.882Z"
+    },
+    {
+      "file": "15-aws-costs.png",
+      "scenario": "Synthetic AWS budget, forecast overrun and a private planning preference"
+    },
+    {
+      "file": "16-certificate-reminders.png",
+      "scenario": "TLS expiry with missing backup verification explicitly unclaimed"
+    },
+    {
+      "file": "17-backup-verification.png",
+      "scenario": "User-attested verification evidence and next due date"
+    },
+    {
+      "file": "18-maintenance-notes.png",
+      "scenario": "Service-specific note with author and saved timestamp"
+    },
+    {
+      "file": "20-expired-heartbeat.png",
+      "scenario": "Worker containers passing while its separate heartbeat is expired"
+    },
+    {
+      "file": "21-normal-scenario.png",
+      "scenario": "Healthy synthetic baseline and matching pipeline/runtime commits"
+    },
+    {
+      "file": "05-source-unavailable.png",
+      "scenario": "Disconnected scenario clears current services while keeping scenario recovery available"
+    },
+    {
+      "file": "03-service-relations.png",
+      "scenario": "Catalog ownership, dependencies and reference source"
+    },
+    {
+      "file": "04-agent-worklog.png",
+      "scenario": "Read-only MCP tool list and cited evidence context",
+      "refreshedAt": "2026-09-25T09:21:54.548Z"
+    },
+    {
+      "file": "06-health-runbook.png",
+      "scenario": "Rendered health runbook with unknown-evidence procedures"
+    },
+    {
+      "file": "22-user-manual.png",
+      "scenario": "Searchable TechDocs manual for every feature",
+      "refreshedAt": "2026-09-25T09:21:54.548Z"
+    },
+    {
+      "file": "07-mobile.png",
+      "scenario": "390px mobile operations overview"
+    },
+    {
+      "file": "23-mobile-workspace.png",
+      "scenario": "390px mobile service details with an internally scrolling container table",
+      "refreshedAt": "2026-09-25T09:21:51.896Z"
+    },
+    {
+      "file": "24-delivery-queue.png",
+      "scenario": "Real persisted synthetic test awaiting its worker, with cancellation available",
+      "capturedAt": "2026-09-25T10:25:35.516Z"
+    },
+    {
+      "file": "25-storage-recovery.png",
+      "scenario": "Rendered TechDocs backup, migration and delivery recovery instructions",
+      "capturedAt": "2026-09-25T10:29:25.68Z"
+    },
+    {
+      "file": "26-aws-inventory.png",
+      "scenario": "Synthetic EC2 identities, partial coverage and service mappings",
+      "capturedAt": "2026-09-25T14:03:22.883Z",
+      "inventoryFixtureSha256": "bb0c0f67f0b72ec4f34bd1ee60c595e5be5412ae5fdb51529fd8851389466cdc"
+    },
+    {
+      "file": "27-production-setup.png",
+      "scenario": "GitLab identity and persistent storage setup manual; not a live OAuth result",
+      "capturedAt": "2026-09-25T14:03:24.2Z",
+      "inventoryFixtureSha256": "bb0c0f67f0b72ec4f34bd1ee60c595e5be5412ae5fdb51529fd8851389466cdc"
+    },
+    {
+      "file": "28-sandbox-delivery.png",
+      "scenario": "Immutable-image sandbox deployment, rollback and AWS transport manual",
+      "capturedAt": "2026-09-25T14:03:25.198Z",
+      "inventoryFixtureSha256": "bb0c0f67f0b72ec4f34bd1ee60c595e5be5412ae5fdb51529fd8851389466cdc"
+    },
+    {
+      "file": "29-model-client.png",
+      "scenario": "External MCP model client setup and evidence-gate evaluation manual",
+      "capturedAt": "2026-09-25T14:03:26.196Z",
+      "inventoryFixtureSha256": "bb0c0f67f0b72ec4f34bd1ee60c595e5be5412ae5fdb51529fd8851389466cdc"
+    },
+    {
+      "file": "30-production-sign-in.png",
+      "scenario": "Verified GitLab-only production configuration screen with dummy OAuth values; no account login",
+      "capturedAt": "2026-09-25T14:13:59.6042158Z",
+      "source": "isolated-production-configuration",
+      "liveOAuth": false
+    },
+    {
+      "file": "31-connections.png",
+      "scenario": "Blank reusable connection setup; no author-owned account or host",
+      "capturedAt": "2026-09-25T15:41:06.411Z",
+      "source": "isolated-synthetic-connections",
+      "connectionAttempted": false
+    },
+    {
+      "file": "32-aws-connection-draft.png",
+      "scenario": "Synthetic AWS configuration export; not installed or connected",
+      "capturedAt": "2026-09-25T15:41:07.403Z",
+      "source": "isolated-synthetic-connections",
+      "connectionAttempted": false
+    },
+    {
+      "file": "33-ssh-connection-draft.png",
+      "scenario": "Two synthetic Linux SSH targets; no SSH connection attempted",
+      "capturedAt": "2026-09-25T15:41:09.322Z",
+      "source": "isolated-synthetic-connections",
+      "connectionAttempted": false
+    },
+    {
+      "file": "34-saved-connection-test.png",
+      "scenario": "Saved synthetic AWS profile with simulated access checks; no cloud request",
+      "capturedAt": "2026-09-25T15:41:10.421Z",
+      "source": "isolated-synthetic-connections",
+      "connectionAttempted": false
+    },
+    {
+      "file": "36-disabled-connection.png",
+      "scenario": "Disabled synthetic profile blocks further tests and clears earlier verification",
+      "capturedAt": "2026-09-25T15:41:10.669Z",
+      "source": "isolated-synthetic-connections",
+      "connectionAttempted": false
+    },
+    {
+      "file": "35-denied-connection.png",
+      "scenario": "Simulated AWS access denial with no success claim or real request",
+      "capturedAt": "2026-09-25T15:41:11.786Z",
+      "source": "isolated-synthetic-connections",
+      "connectionAttempted": false
+    },
+    {
+      "file": "37-minimal-features.png",
+      "scenario": "Isolated demo workspace with every optional module off",
+      "capturedAt": "2026-09-25T18:11:04.392711Z",
+      "source": "isolated-feature-settings",
+      "connectionAttempted": false
+    },
+    {
+      "file": "38-selected-features.png",
+      "scenario": "Only connections and costs selected in an isolated demo workspace",
+      "capturedAt": "2026-09-25T18:11:07.604150Z",
+      "source": "isolated-feature-settings",
+      "connectionAttempted": false
+    },
+    {
+      "file": "39-optional-workspace.png",
+      "scenario": "Synthetic costs shown as the only enabled workspace tab",
+      "capturedAt": "2026-09-25T18:11:08.845085Z",
+      "source": "isolated-feature-settings",
+      "connectionAttempted": false
+    }
+  ],
+  "publicRelease": "v0.1.0",
+  "note": "Historical synthetic captures; navigation and wording may predate this public release."
+}

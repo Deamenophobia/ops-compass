@@ -1,0 +1,43 @@
+# Synthetic demonstrations only. Main has no fixture or sample workload catalog.
+backend:
+  database:
+    plugin:
+      operations:
+        connection:
+          filename: ../../private/operations-demo.sqlite
+catalog:
+  locations:
+    - type: file
+      target: ../../catalog-info.yaml
+    - type: file
+      target: ../../catalog/entities.yaml
+    - type: file
+      target: ../../catalog/demo.yaml
+opsCompass:
+  mode: demo
+  inventory:
+    file: ../../demo/inventory.json
+    maxAgeSeconds: 300
+  demoFile: ../../demo/observations.json
+  demoScenarios:
+    - id: disk-pressure
+      title: Disk pressure
+      description: Synthetic disk usage is 84%, a certificate is due soon, and backup evidence is stale. The pipeline commit differs from the runtime.
+      file: ../../demo/observations.json
+    - id: normal
+      title: Normal operation
+      description: Current synthetic health checks, matching pipeline revisions and an in-budget forecast. No live systems are inspected.
+      file: ../../demo/normal.json
+    - id: container-unhealthy
+      title: Unhealthy container
+      description: The gateway process is running but its health check fails and seven restarts are recorded. Review the health transition in History.
+      file: ../../demo/container-unhealthy.json
+    - id: stale-heartbeat
+      title: Expired worker heartbeat
+      description: All worker containers are running, but the market worker heartbeat is ten minutes old. Its current health must remain unknown.
+      file: ../../demo/stale-heartbeat.json
+    - id: disconnected
+      title: Disconnected collector
+      description: The synthetic provider is unavailable. Current service details clear while historical records remain. Choose another scenario here to recover.
+      file: ../../demo/observations.json
+      unavailable: true
