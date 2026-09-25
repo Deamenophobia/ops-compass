@@ -1,0 +1,11 @@
+# Optional overlay. The launcher supplies an ephemeral token; no secret is committed.
+backend:
+  auth:
+    externalAccess:
+      - type: static
+        options:
+          token: ${OPS_COMPASS_MCP_TOKEN}
+          subject: ops-compass-local-agent
+        accessRestrictions:
+          - plugin: mcp-actions
+          - plugin: operations

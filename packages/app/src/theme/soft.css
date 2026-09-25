@@ -1,0 +1,20 @@
+/* Backstage UI uses CSS tokens; Material UI uses softTheme.tsx. Keep these aligned. */
+:root,
+[data-theme-mode='light'] {
+  --bui-font-regular: ui-rounded, 'Segoe UI', sans-serif;
+  --bui-bg-app: #faf7f2;
+  --bui-bg-neutral-1: #fffefd;
+  --bui-bg-neutral-2: #f5eff8;
+  --bui-fg-primary: #3d354b;
+  --bui-fg-secondary: #6c6278;
+  --bui-border-1: #e7dfeb;
+  --bui-bg-solid: #70509a;
+  --bui-bg-solid-hover: #5c3e84;
+}
+
+/* Native keyboard focus stays visible across both component libraries. */
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid #8c68b1;
+  outline-offset: 3px;
+}

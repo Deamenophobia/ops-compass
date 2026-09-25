@@ -1,0 +1,30 @@
+services:
+  portal:
+    image: ${PORTAL_IMAGE:?Set an immutable portal image digest}
+    restart: unless-stopped
+    init: true
+    ports:
+      - '127.0.0.1:7007:7007'
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: --max-old-space-size=1536
+      PORTAL_BASE_URL: ${PORTAL_BASE_URL:?Set the HTTPS portal URL}
+      PORTAL_DATA_DIR: /data/backstage
+      PORTAL_IDENTITIES_FILE: /config/identities.yaml
+      PORTAL_OWNER_REF: ${PORTAL_OWNER_REF:?Set the catalog user reference}
+      AUTH_GITLAB_CLIENT_ID: ${AUTH_GITLAB_CLIENT_ID:?Configure GitLab OAuth}
+      AUTH_GITLAB_CLIENT_SECRET: ${AUTH_GITLAB_CLIENT_SECRET:?Configure GitLab OAuth}
+    volumes:
+      - portal-data:/data
+      - ${PORTAL_IDENTITIES_PATH:?Set the private identity file}:/config/identities.yaml:ro
+    security_opt: [no-new-privileges:true]
+    cap_drop: [ALL]
+    mem_limit: 2g
+    healthcheck:
+      test: ['CMD', 'node', '-e', "fetch('http://127.0.0.1:7007/.backstage/health/v1/readiness').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 120s
+      retries: 3
+volumes:
+  portal-data:

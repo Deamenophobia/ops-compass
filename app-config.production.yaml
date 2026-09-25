@@ -1,0 +1,42 @@
+# One private backend, persisted plugin databases. See guides/production-setup.md.
+app:
+  baseUrl: ${PORTAL_BASE_URL}
+backend:
+  baseUrl: ${PORTAL_BASE_URL}
+  listen:
+    host: 0.0.0.0
+    port: 7007
+  cors:
+    origin: ${PORTAL_BASE_URL}
+  database:
+    client: better-sqlite3
+    connection:
+      directory: ${PORTAL_DATA_DIR}
+    plugin:
+      operations:
+        connection:
+          # Backstage joins this name to connection.directory; keep it relative.
+          filename: operations.sqlite
+auth:
+  environment: production
+  providers:
+    guest: null
+    gitlab:
+      production:
+        clientId: ${AUTH_GITLAB_CLIENT_ID}
+        clientSecret: ${AUTH_GITLAB_CLIENT_SECRET}
+        signIn:
+          resolvers:
+            - resolver: userIdMatchingUserEntityAnnotation
+catalog:
+  locations:
+    - type: file
+      target: ./catalog-info.yaml
+    - type: file
+      target: ./catalog/entities.yaml
+    - type: file
+      target: ${PORTAL_IDENTITIES_FILE}
+opsCompass:
+  mode: unconfigured
+  writers:
+    - ${PORTAL_OWNER_REF}

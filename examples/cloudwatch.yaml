@@ -1,0 +1,13 @@
+# Copy the opsCompass section into ignored app-config.local.yaml and edit it.
+# Uses the standard AWS SDK credential chain. No AWS key belongs in this file.
+opsCompass:
+  mode: cloudwatch
+  maxAgeSeconds: 300
+  aws:
+    region: eu-west-1
+    alarms:
+      - name: sample-host-cpu-high
+        id: sample-cpu
+        label: Sample host CPU alarm
+        entityRef: resource:default/sample-host
+        environment: sandbox

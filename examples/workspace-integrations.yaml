@@ -1,0 +1,17 @@
+# Copy only needed sections into an ignored *.local.yaml overlay.
+opsCompass:
+  gitlab:
+    baseUrl: https://gitlab.com
+    token: ${OPS_COMPASS_GITLAB_TOKEN}
+    projects:
+      - serviceId: ${OPS_COMPASS_SERVICE_ID}
+        projectId: ${OPS_COMPASS_GITLAB_PROJECT}
+        ref: main
+  costs:
+    accountId: ${OPS_COMPASS_AWS_ACCOUNT_ID}
+    budgetName: ${OPS_COMPASS_AWS_BUDGET_NAME}
+  notifications:
+    resendApiKey: ${OPS_COMPASS_RESEND_API_KEY}
+    # For SNS, use these fields instead of a Resend key:
+    # snsTopicArn: ${OPS_COMPASS_SNS_TOPIC_ARN}
+    # snsRegion: ${AWS_REGION}

@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ops-compass
+  title: Ops Compass
+  description: Personal AWS operations portal and engineering handbook.
+  annotations:
+    backstage.io/techdocs-ref: dir:./docs
+  tags: [backstage, aws, operations]
+spec:
+  type: website
+  owner: group:default/platform-owner
+  lifecycle: experimental
+  system: personal-platform

@@ -1,0 +1,43 @@
+site_name: Ops Compass Handbook
+site_description: Architecture, operations, and verification records
+docs_dir: .
+site_dir: ../site
+nav:
+  - Start here: index.md
+  - Get started:
+      - Local setup: guides/local-setup.md
+      - Choose features: guides/features.md
+      - User manual: guides/user-manual.md
+  - Configure sources:
+      - Connections: guides/connections.md
+      - Workspace providers: guides/workspace-setup.md
+      - Collect host observations: guides/host-observations.md
+      - AWS CloudWatch: guides/cloudwatch.md
+      - AWS inventory: guides/aws-inventory.md
+  - Operate and extend:
+      - Storage and delivery recovery: guides/storage-and-delivery.md
+      - Private production setup: guides/production-setup.md
+      - Sandbox delivery and rollback: guides/sandbox-delivery.md
+      - Agent access: guides/agent-access.md
+      - Model client and evaluations: guides/ai-client.md
+  - Runbooks:
+      - Health and stale evidence: runbooks/health.md
+      - Email alerts: runbooks/email-alerts.md
+  - Development:
+      - Architecture and stack: architecture.md
+      - Code walkthrough: guides/code-walkthrough.md
+      - Frontend design: guides/frontend-design.md
+      - Engineering guide: engineering.md
+      - Project charter: project-charter.md
+  - Design decisions:
+      - Observation boundary: decisions/0001-observation-boundary.md
+      - Agent interface: decisions/0002-agent-interface.md
+      - Workspace journal: decisions/0003-workspace-journal.md
+      - Migrations and delivery queue: decisions/0004-migrations-and-outbox.md
+  - Releases:
+      - Public preview and limits: releases/preview.md
+      - Dependency review: releases/dependency-review.md
+      - Branch and publication workflow: guides/repository-workflow.md
+      - Roadmap: roadmap.md
+plugins:
+  - techdocs-core

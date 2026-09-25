@@ -1,0 +1,45 @@
+# Copy/include only after selecting a runner and configuring the protected OIDC role.
+# This filename is deliberately not .gitlab-ci.yml; it activates no pipeline.
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "web" && $CI_COMMIT_BRANCH == "main"'
+    - when: never
+stages: [verify, publish]
+verify:
+  image: node:22-bookworm
+  stage: verify
+  script:
+    - corepack enable
+    - yarn install --immutable
+    - yarn tsc
+    - yarn lint:all
+    - yarn workspace @ops-compass/plugin-operations-backend test --watchAll=false --runInBand
+    - yarn workspace @ops-compass/operations-common test --watchAll=false --runInBand
+    - node --test scripts/agent-model.test.mjs
+    - yarn build:all
+publish-sandbox:
+  # Dedicated runner supplies Docker, Python, AWS CLI and an isolated Docker daemon.
+  tags: [ops-compass-sandbox]
+  stage: publish
+  when: manual
+  allow_failure: false
+  id_tokens:
+    AWS_ID_TOKEN:
+      aud: sts.amazonaws.com
+  script:
+    - umask 077
+    - export AWS_WEB_IDENTITY_TOKEN_FILE="$CI_PROJECT_DIR/.aws-oidc-token"
+    - printf '%s' "$AWS_ID_TOKEN" > "$AWS_WEB_IDENTITY_TOKEN_FILE"
+    - test "$(aws sts get-caller-identity --query Account --output text)" = "$AWS_ACCOUNT_ID"
+    - export ECR_REGISTRY="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com"
+    - export DOCKER_CONFIG="$CI_PROJECT_DIR/.docker-sandbox"
+    - mkdir -p "$DOCKER_CONFIG"
+    - aws ecr get-login-password | docker login --username AWS --password-stdin "$ECR_REGISTRY"
+    - docker build --build-arg "REVISION=$CI_COMMIT_SHA" -t "$ECR_REGISTRY/ops-compass-sandbox:$CI_COMMIT_SHA" sandbox
+    - docker push "$ECR_REGISTRY/ops-compass-sandbox:$CI_COMMIT_SHA"
+    - aws ecr describe-images --repository-name ops-compass-sandbox --image-ids "imageTag=$CI_COMMIT_SHA" --query 'imageDetails[0].imageDigest' --output text > image-digest.txt
+  after_script:
+    - rm -f "$CI_PROJECT_DIR/.aws-oidc-token"
+    - rm -rf "$CI_PROJECT_DIR/.docker-sandbox"
+  artifacts:
+    paths: [image-digest.txt]

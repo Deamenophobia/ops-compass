@@ -1,0 +1,6 @@
+{
+  "expectedAccountId": "000000000000",
+  "regions": ["eu-west-1"],
+  "profile": "personal",
+  "serviceMappings": {"i-0123456789abcdef0": ["personal-web"]}
+}

@@ -1,0 +1,14 @@
+{
+  "targets": [
+    {
+      "id": "sample",
+      "sshAlias": "sample-sandbox",
+      "entityRef": "resource:default/sample-host",
+      "label": "Sample sandbox",
+      "environment": "sandbox",
+      "region": "eu-west-1",
+      "checkDocker": true,
+      "minimumRunning": 3
+    }
+  ]
+}

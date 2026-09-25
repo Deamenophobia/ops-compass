@@ -1,0 +1,8 @@
+# Serve the built frontend from the development backend to reduce local memory use.
+# This is still loopback-only development mode, with the same guest identity.
+app:
+  baseUrl: http://localhost:7007
+backend:
+  baseUrl: http://localhost:7007
+  cors:
+    origin: http://localhost:7007

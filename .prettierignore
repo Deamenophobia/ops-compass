@@ -1,0 +1,10 @@
+dist
+dist-types
+coverage
+.vscode
+.venv
+private
+site
+test-results
+*.local.yaml
+*.local.json

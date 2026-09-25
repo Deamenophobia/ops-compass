@@ -1,0 +1,67 @@
+{
+  "name": "ops-compass",
+  "version": "0.1.0",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": "22 || 24"
+  },
+  "scripts": {
+    "start": "backstage-cli repo start",
+    "build:backend": "yarn workspace backend build",
+    "build:all": "backstage-cli repo build --all",
+    "build-image": "yarn workspace backend build-image",
+    "tsc": "tsc",
+    "tsc:full": "tsc --skipLibCheck false --incremental false",
+    "clean": "backstage-cli repo clean",
+    "test": "backstage-cli repo test",
+    "test:all": "backstage-cli repo test --coverage",
+    "test:e2e": "playwright test",
+    "fix": "backstage-cli repo fix",
+    "lint": "backstage-cli repo lint",
+    "lint:all": "backstage-cli repo lint",
+    "prettier:check": "prettier --check .",
+    "new": "backstage-cli new",
+    "verify": "yarn tsc && yarn lint:all && yarn test --watchAll=false"
+  },
+  "backstage": {
+    "cli": {
+      "new": {
+        "globals": {
+          "license": "MIT"
+        }
+      }
+    }
+  },
+  "workspaces": [
+    "packages/*",
+    "plugins/*"
+  ],
+  "devDependencies": {
+    "@backstage/cli": "^0.36.6",
+    "@backstage/cli-defaults": "^0.1.6",
+    "@jest/environment-jsdom-abstract": "~30.2.0",
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "@playwright/test": "^1.32.3",
+    "@types/jest": "^30.0.0",
+    "jest": "~30.2.0",
+    "jsdom": "^27.1.0",
+    "node-gyp": "12.4.0",
+    "prettier": "^2.3.2",
+    "typescript": "~5.8.0"
+  },
+  "resolutions": {
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "node-gyp": "12.4.0",
+    "adm-zip@npm:0.6.0": "0.6.1",
+    "prismjs@npm:~1.27.0": "1.30.0",
+    "protobufjs@npm:^7.5.5": "7.6.6",
+    "protobufjs@npm:^7.0.0": "7.6.6",
+    "protobufjs@npm:^7.2.5": "7.6.6",
+    "protobufjs@npm:^7.2.6": "7.6.6",
+    "protobufjs@npm:^7.3.2": "7.6.6"
+  },
+  "prettier": "@backstage/cli/config/prettier",
+  "packageManager": "yarn@4.13.0"
+}

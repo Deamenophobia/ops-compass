@@ -1,0 +1,11 @@
+# Administrator-owned backend overlay. Replace every example before enabling.
+# Credentials live in backend AWS CLI / SSH configuration, never this file or UI.
+opsCompass:
+  connections:
+    testing:
+      enabled: false
+      aws:
+        - profile: your-readonly-profile
+          expectedAccountId: '000000000000'
+          regions: [eu-west-1]
+      sshAliases: [your-approved-server]

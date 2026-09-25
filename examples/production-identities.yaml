@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: portal-owner
+  annotations:
+    # Replace with the numeric ID from your own GitLab profile/API.
+    gitlab.com/user-id: '00000000'
+spec:
+  memberOf: [platform-owner]

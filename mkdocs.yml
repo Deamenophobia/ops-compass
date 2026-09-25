@@ -1,0 +1,4 @@
+# Keep the root CLI command while TechDocs reads only the handbook directory.
+INHERIT: docs/mkdocs.yml
+docs_dir: docs
+site_dir: site

@@ -1,0 +1,23 @@
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: platform-owner
+spec:
+  type: team
+  children: []
+  members: [guest]
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: guest
+spec:
+  memberOf: [platform-owner]
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: personal-platform
+  description: Catalog and runtime visibility for personal services.
+spec:
+  owner: platform-owner
