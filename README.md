@@ -32,4 +32,13 @@ Cloud access and email require your own configuration. Demo observations are syn
 This is a preview for local evaluation; read the [release notes and limits](docs/releases/preview.md)
 before hosting it. Guest access is for loopback development.
 
+## Related project
+
+For lightweight server status monitoring, see [Lookout](https://github.com/Deamenophobia/lookout).
+It runs locally and combines SSH, HTTP and TCP health checks, server notes, quick links
+and cost estimates in one dashboard. Ops Compass provides the broader service catalog,
+ownership, runbooks and operational workflows. The projects run independently;
+there is no built-in data synchronization. Lookout is currently a private repository
+and requires access.
+
 [Demo gallery](https://github.com/Deamenophobia/ops-compass/blob/demo/docs/guides/demo-gallery.md) · [User manual](docs/guides/user-manual.md) · [Architecture](docs/architecture.md) · [MIT license](LICENSE)
