@@ -1,7 +1,12 @@
 # First public preview
 
-Release: **v0.1.0**, 26 September 2026. License: MIT for original project materials;
+Snapshot version: **0.1.0**, 26 September 2026. License: MIT for original project materials;
 third-party licenses are preserved separately.
+
+The original source snapshots remain available at the
+[main commit](https://github.com/Deamenophobia/ops-compass/tree/e24db8f6f14889af2e1846ce446518991c4ce329)
+and [demo commit](https://github.com/Deamenophobia/ops-compass/tree/01cc87a18dcd85eaac82eac3e7271d15a065977c).
+Use these commits when reproducing the original preview.
 
 Start with [Local setup](../guides/local-setup.md), then [choose optional features](../guides/features.md).
 `main` has no sample workloads. `demo` adds synthetic observations and an

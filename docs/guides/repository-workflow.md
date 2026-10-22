@@ -22,7 +22,9 @@ then read the release notes and [storage guide](storage-and-delivery.md).
 The maintainer exports verified tracked files into a separate release checkout,
 excluding private worklogs, local runtime files and private Git history. Public
 links and release notes are prepared there. Each update adds ordinary commits to
-the existing GitHub branches and a release tag; public history is not force-replaced.
+the existing GitHub branches; public history is not force-replaced. Exact commit
+links identify reviewed snapshots. Version tags and GitHub release entries are
+optional and are created only when explicitly requested.
 
 The maintainer's development checkout keeps its GitLab `origin`. GitHub uses a
 different checkout and remote. Feedback on GitHub can be incorporated into private
