@@ -38,7 +38,6 @@ For lightweight server status monitoring, see [Small Server OB](https://github.c
 It runs locally and combines SSH, HTTP and TCP health checks, server notes, quick links
 and cost estimates in one dashboard. Ops Compass provides the broader service catalog,
 ownership, runbooks and operational workflows. The projects run independently;
-there is no built-in data synchronization. Small Server OB is currently a private repository
-and requires access.
+there is no built-in data synchronization.
 
 [Demo gallery](https://github.com/Deamenophobia/ops-compass/blob/demo/docs/guides/demo-gallery.md) · [User manual](docs/guides/user-manual.md) · [Architecture](docs/architecture.md) · [MIT license](LICENSE)
