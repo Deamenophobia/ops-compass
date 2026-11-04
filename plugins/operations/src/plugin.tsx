@@ -1,6 +1,5 @@
 import {
   createFrontendPlugin,
-  createRouteRef,
   PageBlueprint,
 } from '@backstage/frontend-plugin-api';
 import ExploreIcon from '@material-ui/icons/Explore';
@@ -8,25 +7,28 @@ import ExtensionIcon from '@material-ui/icons/Extension';
 import WorkOutlineIcon from '@material-ui/icons/WorkOutline';
 import CloudQueueIcon from '@material-ui/icons/CloudQueue';
 import TuneIcon from '@material-ui/icons/Tune';
+import AccountTreeIcon from '@material-ui/icons/AccountTree';
+import { operationsRoutes } from './routes';
 import { FeatureGate } from './features/FeatureContext';
 
-const rootRouteRef = createRouteRef();
+// Each lazy page owns its themed Page/Header; suppress the additional native header.
 const operationsPage = PageBlueprint.make({
   params: {
+    noHeader: true,
     path: '/operations',
-    routeRef: rootRouteRef,
+    routeRef: operationsRoutes.root,
     title: 'Operations',
     icon: <ExploreIcon />,
     loader: () => import('./OperationsPage').then(m => <m.OperationsPage />),
   },
 });
 
-const agentRouteRef = createRouteRef();
 const agentPage = PageBlueprint.make({
   name: 'agent',
   params: {
+    noHeader: true,
     path: '/agent',
-    routeRef: agentRouteRef,
+    routeRef: operationsRoutes.agent,
     title: 'Agent access',
     icon: <ExtensionIcon />,
     loader: () =>
@@ -42,10 +44,43 @@ export const operationsPlugin = createFrontendPlugin({
   pluginId: 'operations',
   extensions: [
     PageBlueprint.make({
+      name: 'dependencies',
+      params: {
+        noHeader: true,
+        path: '/dependencies',
+        routeRef: operationsRoutes.dependencies,
+        title: 'Dependencies',
+        icon: <AccountTreeIcon />,
+        loader: () =>
+          import('./dependencies/DependenciesPage').then(m => (
+            <FeatureGate feature="dependencies">
+              <m.DependenciesPage />
+            </FeatureGate>
+          )),
+      },
+    }),
+    PageBlueprint.make({
+      name: 'kubernetes',
+      params: {
+        noHeader: true,
+        path: '/kubernetes',
+        routeRef: operationsRoutes.kubernetes,
+        title: 'Kubernetes',
+        icon: <CloudQueueIcon />,
+        loader: () =>
+          import('./KubernetesPage').then(m => (
+            <FeatureGate feature="kubernetes">
+              <m.KubernetesPage />
+            </FeatureGate>
+          )),
+      },
+    }),
+    PageBlueprint.make({
       name: 'features',
       params: {
+        noHeader: true,
         path: '/features',
-        routeRef: createRouteRef(),
+        routeRef: operationsRoutes.features,
         title: 'Workspace features',
         icon: <TuneIcon />,
         loader: () =>
@@ -55,8 +90,9 @@ export const operationsPlugin = createFrontendPlugin({
     PageBlueprint.make({
       name: 'connections',
       params: {
+        noHeader: true,
         path: '/connections',
-        routeRef: createRouteRef(),
+        routeRef: operationsRoutes.connections,
         title: 'Connections',
         icon: <CloudQueueIcon />,
         loader: () =>
@@ -70,8 +106,9 @@ export const operationsPlugin = createFrontendPlugin({
     PageBlueprint.make({
       name: 'inventory',
       params: {
+        noHeader: true,
         path: '/inventory',
-        routeRef: createRouteRef(),
+        routeRef: operationsRoutes.inventory,
         title: 'AWS inventory',
         icon: <CloudQueueIcon />,
         loader: () =>
@@ -87,8 +124,9 @@ export const operationsPlugin = createFrontendPlugin({
     PageBlueprint.make({
       name: 'workspace',
       params: {
+        noHeader: true,
         path: '/workspace',
-        routeRef: createRouteRef(),
+        routeRef: operationsRoutes.workspace,
         title: 'Workspace',
         icon: <WorkOutlineIcon />,
         loader: () =>
@@ -100,5 +138,5 @@ export const operationsPlugin = createFrontendPlugin({
       },
     }),
   ],
-  routes: { root: rootRouteRef, agent: agentRouteRef },
+  routes: operationsRoutes,
 });

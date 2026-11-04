@@ -136,7 +136,7 @@ export class WorkspaceService {
     }
   }
 
-  async read(canWrite: boolean): Promise<Workspace> {
+  async read(canWrite: boolean, canAdmin = false): Promise<Workspace> {
     let snapshot: Snapshot = {
       schemaVersion: 1,
       source: this.sourceName,
@@ -206,6 +206,7 @@ export class WorkspaceService {
       sourceStatus,
       evaluatedAt: new Date().toISOString(),
       maxAgeSeconds: this.maxAgeSeconds,
+      canAdmin,
       canWrite,
       services,
       deployments,

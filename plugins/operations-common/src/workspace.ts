@@ -183,6 +183,7 @@ export type Workspace = {
   evaluatedAt: string;
   maxAgeSeconds: number;
   canWrite: boolean;
+  canAdmin: boolean;
   services: Service[];
   deployments: {
     status: 'unconfigured' | 'available' | 'unavailable';

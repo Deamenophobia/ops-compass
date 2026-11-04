@@ -1,13 +1,28 @@
 {
-  "checkedAt": "2026-09-26",
+  "checkedAt": "2026-11-04",
   "command": "yarn npm audit --all --recursive --json",
   "scope": "All workspaces, production and development dependencies",
   "severity": {
-    "moderate": 7,
-    "low": 1
+    "high": 2,
+    "low": 2,
+    "moderate": 9
   },
-  "deprecationRecords": 19,
+  "deprecationRecords": 20,
   "findings": [
+    {
+      "package": "@graphql-tools/utils",
+      "severity": "high",
+      "versions": [
+        "8.9.0",
+        "8.13.1"
+      ],
+      "issue": "GraphQL Tools has prototype pollution in well-established utility function `mergeDeep`",
+      "url": "https://github.com/advisories/GHSA-7mx3-vvmw-hjmv",
+      "dependents": [
+        "@graphql-tools/schema@virtual:b8b983d738859fb9be27027de0f8864cf9b6e7b43db32286d918c15cf243bd7f69a183aef9887263a8e0348ba4e3b8f08dbe26becb44a22a84e4802f9499e2df#npm:8.5.1",
+        "mockttp@npm:3.17.2"
+      ]
+    },
     {
       "package": "@octokit/plugin-paginate-rest",
       "severity": "moderate",
@@ -15,7 +30,10 @@
         "6.1.2"
       ],
       "issue": "@octokit/plugin-paginate-rest has a Regular Expression in iterator Leads to ReDoS Vulnerability Due to Catastrophic Backtracking",
-      "advisory": "https://github.com/advisories/GHSA-h5c3-5r3r-rr8q"
+      "url": "https://github.com/advisories/GHSA-h5c3-5r3r-rr8q",
+      "dependents": [
+        "@octokit/rest@npm:19.0.13"
+      ]
     },
     {
       "package": "@octokit/request",
@@ -24,7 +42,10 @@
         "6.2.8"
       ],
       "issue": "@octokit/request has a Regular Expression in fetchWrapper that Leads to ReDoS Vulnerability Due to Catastrophic Backtracking",
-      "advisory": "https://github.com/advisories/GHSA-rmvr-2pp2-xj38"
+      "url": "https://github.com/advisories/GHSA-rmvr-2pp2-xj38",
+      "dependents": [
+        "@octokit/auth-app@npm:4.0.13"
+      ]
     },
     {
       "package": "@octokit/request-error",
@@ -33,7 +54,34 @@
         "3.0.3"
       ],
       "issue": "@octokit/request-error has a Regular Expression in index that Leads to ReDoS Vulnerability Due to Catastrophic Backtracking",
-      "advisory": "https://github.com/advisories/GHSA-xx4v-prfh-6cgc"
+      "url": "https://github.com/advisories/GHSA-xx4v-prfh-6cgc",
+      "dependents": [
+        "@octokit/auth-app@npm:4.0.13"
+      ]
+    },
+    {
+      "package": "basic-ftp",
+      "severity": "high",
+      "versions": [
+        "5.3.1"
+      ],
+      "issue": "basic-ftp: Quadratic-time CPU denial of service in Client.list() Unix directory-listing parser (RE_LINE backtracking)",
+      "url": "https://github.com/advisories/GHSA-c475-qrg2-pj4r",
+      "dependents": [
+        "get-uri@npm:6.0.5"
+      ]
+    },
+    {
+      "package": "deepmerge",
+      "severity": "low",
+      "versions": [
+        "4.3.1"
+      ],
+      "issue": "deepmerge mergeObject() allows prototype poisoning of returned objects",
+      "url": "https://github.com/advisories/GHSA-gcqx-w48m-w2h4",
+      "dependents": [
+        "@rollup/plugin-node-resolve@virtual:634db7679511a01da994ca11a293ce4b28d6dafafede2c1b21d58ac27551b93589da48ae8ca54f276f3ac7f036de28645d617393864887d066166167d688df75#npm:15.3.1"
+      ]
     },
     {
       "package": "elliptic",
@@ -42,7 +90,10 @@
         "6.6.1"
       ],
       "issue": "Elliptic Uses a Cryptographic Primitive with a Risky Implementation",
-      "advisory": "https://github.com/advisories/GHSA-848j-6mx2-7j84"
+      "url": "https://github.com/advisories/GHSA-848j-6mx2-7j84",
+      "dependents": [
+        "browserify-sign@npm:4.2.6"
+      ]
     },
     {
       "package": "file-type",
@@ -51,7 +102,42 @@
         "16.5.4"
       ],
       "issue": "file-type affected by infinite loop in ASF parser on malformed input with zero-size sub-header",
-      "advisory": "https://github.com/advisories/GHSA-5v7r-6r5c-r473"
+      "url": "https://github.com/advisories/GHSA-5v7r-6r5c-r473",
+      "dependents": [
+        "@trendyol-js/openstack-swift-sdk@npm:0.0.7"
+      ]
+    },
+    {
+      "package": "glob",
+      "severity": "moderate",
+      "versions": [
+        "10.5.0",
+        "13.0.6"
+      ],
+      "issue": "Glob: AbortSignal cancellation bypass allows post-timeout filesystem traversal",
+      "url": "https://github.com/advisories/GHSA-3g3m-2fjr-6pw4",
+      "dependents": [
+        "@backstage/cli@virtual:ccf91965bf797a7aecc15c624afed6461aedfbd41558282dcb7a2ad8c4ada70f024ec378b3dc85f372dc44149d914e5292cca1cadae1dde01de44ffd6ec6f7fb#npm:0.36.6",
+        "@rollup/plugin-commonjs@virtual:634db7679511a01da994ca11a293ce4b28d6dafafede2c1b21d58ac27551b93589da48ae8ca54f276f3ac7f036de28645d617393864887d066166167d688df75#npm:26.0.3"
+      ]
+    },
+    {
+      "package": "minimatch",
+      "severity": "moderate",
+      "versions": [
+        "3.1.5",
+        "5.1.9",
+        "9.0.9",
+        "10.2.6"
+      ],
+      "issue": "minimatch has potential denial of service via globparts amplification",
+      "url": "https://github.com/advisories/GHSA-g3hv-75wg-m249",
+      "dependents": [
+        "@backstage/backend-defaults@virtual:ae77c02031060544679486a567a1b99af5ee09775cb67588c4f6fae4b1d01b7ff3661c57421ced1943517e44439fe7a1bf204699a9f03843cfb4baf0a73d6fe2#npm:0.18.0",
+        "eslint@npm:8.57.1",
+        "glob@npm:10.5.0",
+        "readdir-glob@npm:1.1.3"
+      ]
     },
     {
       "package": "react-router",
@@ -60,7 +146,10 @@
         "6.30.6"
       ],
       "issue": "React Router: Open redirect via backslash in <Link> and useNavigate (CVE-2025-68470 bypass)",
-      "advisory": "https://github.com/advisories/GHSA-wrjc-x8rr-h8h6"
+      "url": "https://github.com/advisories/GHSA-wrjc-x8rr-h8h6",
+      "dependents": [
+        "react-router-dom@virtual:f87a972e7ee54256c6d8f979d7f3914b32522893226eba595e4efe4ecc641a239c6d88e01eccc6f32db30829d6ac493bfc98cb406a9b0d6059ee4112c0843da9#npm:6.30.6"
+      ]
     },
     {
       "package": "react-router",
@@ -69,7 +158,10 @@
         "6.30.6"
       ],
       "issue": "React Router: Arbitrary Constructor Injection via deserializeErrors() in React Router SSR Hydration",
-      "advisory": "https://github.com/advisories/GHSA-337j-9hxr-rhxg"
+      "url": "https://github.com/advisories/GHSA-337j-9hxr-rhxg",
+      "dependents": [
+        "react-router-dom@virtual:f87a972e7ee54256c6d8f979d7f3914b32522893226eba595e4efe4ecc641a239c6d88e01eccc6f32db30829d6ac493bfc98cb406a9b0d6059ee4112c0843da9#npm:6.30.6"
+      ]
     },
     {
       "package": "uuid",
@@ -81,7 +173,13 @@
         "10.0.0"
       ],
       "issue": "uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided",
-      "advisory": "https://github.com/advisories/GHSA-w5hq-g745-h8pq"
+      "url": "https://github.com/advisories/GHSA-w5hq-g745-h8pq",
+      "dependents": [
+        "@material-table/core@virtual:77d1c43175351533b1a69c026f85f30829c6a027bbd78885070b13ac54595802ad775c00f1d804b1dcfd4d6262b121dba647e4e0b8d1f1d53583b9f98d9abe31#npm:3.2.5",
+        "dockerode@npm:4.0.12",
+        "gaxios@npm:6.7.1",
+        "mockttp@npm:3.17.2"
+      ]
     }
   ]
 }

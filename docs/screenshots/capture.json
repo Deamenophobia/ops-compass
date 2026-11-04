@@ -190,7 +190,7 @@
     {
       "file": "38-selected-features.png",
       "scenario": "Only connections and costs selected in an isolated demo workspace",
-      "capturedAt": "2026-09-25T18:11:07.604150Z",
+      "capturedAt": "2026-09-25T18:11:07.60415Z",
       "source": "isolated-feature-settings",
       "connectionAttempted": false
     },
@@ -200,8 +200,46 @@
       "capturedAt": "2026-09-25T18:11:08.845085Z",
       "source": "isolated-feature-settings",
       "connectionAttempted": false
+    },
+    {
+      "file": "40-team-workspaces.png",
+      "scenario": "Isolated sample workspaces with Team sandbox selected and independent feature choices",
+      "capturedAt": "2026-09-28T19:49:21.782816+08:00",
+      "source": "isolated-team-workspaces",
+      "connectionAttempted": false
+    },
+    {
+      "file": "41-kubernetes-workloads.jpg",
+      "scenario": "Synthetic Kubernetes deployment, pods, restarts and warning event",
+      "capturedAt": "2026-11-04T03:30:45.0726433Z",
+      "source": "isolated-synthetic-kubernetes",
+      "fixtureSha256": "f2a1dbf8fdfb5fc90fa2e819eb9c6315feb722788f9fa2fd9f59dfb9a914dcda",
+      "connectionAttempted": false
+    },
+    {
+      "file": "42-kubernetes-refresh-failure.jpg",
+      "scenario": "Intentionally invalid synthetic file: prior observations retained with unknown current status",
+      "capturedAt": "2026-11-04T03:31:23.0814264Z",
+      "source": "isolated-synthetic-kubernetes",
+      "connectionAttempted": false
+    },
+    {
+      "fixtureSha256": "42144fc734c9724e12119a271b62956af1b362ae23ccb50558097d6381d756ab",
+      "scenario": "Synthetic database failure and two declared consumers; no traffic discovery",
+      "file": "43-database-dependencies.jpg",
+      "capturedAt": "2026-11-04T04:10:23.6185262Z",
+      "source": "isolated-synthetic-dependencies",
+      "connectionAttempted": false
+    },
+    {
+      "fixtureSha256": "42144fc734c9724e12119a271b62956af1b362ae23ccb50558097d6381d756ab",
+      "scenario": "Synthetic consumers keep their own passing checks despite a critical dependency",
+      "file": "44-dependency-checks.jpg",
+      "capturedAt": "2026-11-04T04:10:42.3009899Z",
+      "source": "isolated-synthetic-dependencies",
+      "connectionAttempted": false
     }
   ],
-  "publicRelease": "v0.1.0",
+  "publicRelease": "v0.2.0-alpha.1",
   "note": "Historical synthetic captures; navigation and wording may predate this public release."
 }

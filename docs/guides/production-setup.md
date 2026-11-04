@@ -22,10 +22,12 @@ are provided; completing a real OAuth sign-in requires those credentials.
    The frontend then offers GitLab only, and the guest backend provider is removed.
    Keep production owner references separate from local guest ownership.
 
-Register other users deliberately. This is not an organization-wide authorization
-system: the custom Operations write APIs allow only configured owners, and its MCP
-credential remains read-only. Review permissions of other installed plugins before
-expanding access beyond the private personal portal.
+Register other users deliberately. [Team mode](workspaces.md) adds explicit workspace
+memberships through Backstage permissions; catalog and TechDocs remain shared.
+`PORTAL_OWNER_REF` bootstraps the personal administrator only on first migration.
+For an existing database, use its current administrator to change memberships.
+Service-only MCP credentials work only in personal mode. Review other installed
+plugins before expanding access beyond a trusted team.
 
 ## Build and start
 

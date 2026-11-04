@@ -12,6 +12,8 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const demo = process.argv.includes('--demo');
 const capture = process.argv.includes('--capture');
 const features = process.argv.includes('--features');
+const team = process.argv.includes('--team');
+const routes = process.argv.includes('--routes');
 if (capture && !demo) throw new Error('Gallery capture requires --demo.');
 await access(join(root, 'packages/app/dist/index.html'));
 await mkdir(join(root, 'private'), { recursive: true });
@@ -28,7 +30,22 @@ const overlay = join(output, 'overlay.json');
 await writeFile(
   overlay,
   JSON.stringify({
-    app: { baseUrl: baseURL },
+    app: {
+      baseUrl: baseURL,
+      ...(routes && {
+        extensions: [
+          'root',
+          'features',
+          'connections',
+          'inventory',
+          'workspace',
+        ].map(name => ({
+          [`page:operations${name === 'root' ? '' : `/${name}`}`]: {
+            config: { path: `/audit/${name}` },
+          },
+        })),
+      }),
+    },
     backend: {
       baseUrl: baseURL,
       listen: { host: '127.0.0.1', port },
@@ -43,10 +60,12 @@ await writeFile(
       },
     },
     opsCompass: {
+      profile: team ? 'team' : 'personal',
       connections: { testing: { enabled: false } },
-      ...(!features && {
-        features: { defaults: { connections: true, inventory: true } },
-      }),
+      ...(!features &&
+        !team && {
+          features: { defaults: { connections: true, inventory: true } },
+        }),
     },
   }),
 );
@@ -64,6 +83,9 @@ Object.assign(env, {
   PLAYWRIGHT_EXPECT_MODE: demo ? 'demo' : 'unconfigured',
   PLAYWRIGHT_CONNECTION_WRITES: '1',
   PLAYWRIGHT_FEATURE_WRITES: features ? '1' : '',
+  PLAYWRIGHT_WORKSPACE_PROFILE: team ? 'team' : 'personal',
+  PLAYWRIGHT_WORKSPACE_CAPTURE_DIR: output,
+  PLAYWRIGHT_ROUTE_OVERRIDES: routes ? '1' : '',
   ...(features && capture && { PLAYWRIGHT_FEATURE_CAPTURE_DIR: output }),
 });
 const configs = [
@@ -130,7 +152,13 @@ try {
   }
   console.log(
     `Testing ${demo ? 'demo' : 'main'} ${
-      features ? 'startup and feature settings' : 'connections'
+      routes
+        ? 'configured page routes'
+        : team
+        ? 'team workspaces'
+        : features
+        ? 'startup and feature settings'
+        : 'connections'
     } with a fresh private journal.`,
   );
   tests = spawn(
@@ -139,8 +167,12 @@ try {
       join(root, 'node_modules/@playwright/test/cli.js'),
       'test',
       '--project=app-chromium',
-      ...(features
-        ? ['app.test.ts', 'features.test.ts']
+      ...(routes
+        ? ['routes.test.ts']
+        : team
+        ? ['workspaces.test.ts']
+        : features
+        ? ['app.test.ts', 'features.test.ts', 'workspaces.test.ts']
         : ['connections.test.ts', 'inventory.test.ts']),
     ],
     { cwd: root, env, windowsHide: true, stdio: 'inherit' },

@@ -44,12 +44,14 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: order-service
+  title: Orders API
   description: Reference order service with a synthetic backup observation.
 spec:
   type: service
   owner: platform-owner
   lifecycle: experimental
   system: sample-commerce
+  dependsOn: [resource:default/orders-database, resource:default/orders-cache]
 ---
 apiVersion: backstage.io/v1alpha1
 kind: Component
@@ -62,4 +64,39 @@ spec:
   owner: platform-owner
   lifecycle: experimental
   system: sample-commerce
-  dependsOn: [resource:default/sample-host]
+  dependsOn: [resource:default/sample-host, resource:default/orders-database]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-api
+  title: Kubernetes example API
+  description: Synthetic Kubernetes deployment and pod observations; no cluster is provisioned.
+spec:
+  type: service
+  owner: platform-owner
+  lifecycle: experimental
+  system: sample-commerce
+  dependsOn: [resource:default/orders-cache]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: orders-database
+  title: Orders database
+  description: Synthetic PostgreSQL resource shared by the Orders API and worker. No database is deployed.
+spec:
+  type: database
+  owner: platform-owner
+  system: sample-commerce
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: orders-cache
+  title: Orders cache
+  description: Synthetic Redis resource. Catalog registration does not establish a network connection.
+spec:
+  type: cache
+  owner: platform-owner
+  system: sample-commerce

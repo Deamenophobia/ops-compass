@@ -21,11 +21,16 @@ For Linux/WSL or the built preview on port 7007, see [Local setup](docs/guides/l
 
 ## Use it
 
+Personal mode is the default. Enable optional [team workspaces](docs/guides/workspaces.md)
+for separate operational records and administrator/user memberships. Both use the same release.
+
 - **Workspace features:** enable only the modules you need; main starts minimal.
 - **Connections:** prepare, save and explicitly test your own AWS or SSH profiles.
 - **Operations:** review timestamped checks and follow a runbook.
 - **Workspace:** inspect containers, compare pipeline revisions and keep worklogs.
 - **Catalog and Docs:** find service relationships and the illustrated handbook.
+- **Kubernetes:** optionally review [workload readiness, pods and warning events](docs/guides/kubernetes.md) by service.
+- **Dependencies:** explore [application and database relationships](docs/guides/dependencies.md) alongside their observations.
 - **Agent access:** provide read-only evidence to your AI client through MCP or HTTP.
 
 Cloud access and email require your own configuration. Demo observations are synthetic.

@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { DEFAULT_WORKSPACE_ID, workspaceIdSchema } from '@ops-compass/core';
 import {
   OperationDocument,
   OperationEvent,
@@ -15,8 +16,12 @@ type NewEvent = Omit<OperationEvent, 'id' | 'createdAt'>;
 export class OperationsStore {
   private queue: Promise<unknown> = Promise.resolve();
   readonly outbox: OutboxStore;
-  constructor(private readonly db: Database) {
-    this.outbox = new OutboxStore(db);
+  constructor(
+    private readonly db: Database,
+    readonly workspaceId = DEFAULT_WORKSPACE_ID,
+  ) {
+    workspaceIdSchema.parse(workspaceId);
+    this.outbox = new OutboxStore(db, workspaceId);
   }
 
   async init() {
@@ -30,13 +35,20 @@ export class OperationsStore {
   }
 
   async get<T>(key: string): Promise<T | undefined> {
-    const row = await this.db('ops_state').where({ key }).first();
+    const row = await this.db('ops_state')
+      .where({ workspaceId: this.workspaceId })
+      .where({ key })
+      .first();
     return row ? JSON.parse(row.value) : undefined;
   }
   async put(key: string, value: unknown) {
     await this.db('ops_state')
-      .insert({ key, value: JSON.stringify(value) })
-      .onConflict('key')
+      .insert({
+        workspaceId: this.workspaceId,
+        key,
+        value: JSON.stringify(value),
+      })
+      .onConflict(['workspaceId', 'key'])
       .merge();
   }
   async update<T>(key: string, fn: (value: T | undefined) => T) {
@@ -53,6 +65,7 @@ export class OperationsStore {
     await this.serial(() =>
       this.db.transaction(async transaction => {
         const row = await transaction('ops_state')
+          .where({ workspaceId: this.workspaceId })
           .where({ key: 'notification-settings' })
           .first();
         const previous: NotificationSettings | undefined = row
@@ -65,10 +78,11 @@ export class OperationsStore {
           previous?.recipient !== settings.recipient;
         await transaction('ops_state')
           .insert({
+            workspaceId: this.workspaceId,
             key: 'notification-settings',
             value: JSON.stringify(settings),
           })
-          .onConflict('key')
+          .onConflict(['workspaceId', 'key'])
           .merge();
         // A worker that read the old settings must fail its conditional claim after
         // this commit. Only a message already marked Sending can still complete.
@@ -92,6 +106,7 @@ export class OperationsStore {
     const createdAt = new Date().toISOString();
     const [row] = await db('ops_events')
       .insert({
+        workspaceId: this.workspaceId,
         kind: event.kind,
         serviceId: event.serviceId,
         createdAt,
@@ -115,12 +130,15 @@ export class OperationsStore {
   ) {
     return this.serial(() =>
       this.db.transaction(async transaction => {
-        const row = await transaction('ops_state').where({ key }).first();
+        const row = await transaction('ops_state')
+          .where({ workspaceId: this.workspaceId })
+          .where({ key })
+          .first();
         const encoded = JSON.stringify(value);
         if (row?.value === encoded) return undefined;
         await transaction('ops_state')
-          .insert({ key, value: encoded })
-          .onConflict('key')
+          .insert({ workspaceId: this.workspaceId, key, value: encoded })
+          .onConflict(['workspaceId', 'key'])
           .merge();
         const previous = row ? JSON.parse(row.value) : undefined;
         const record = await this.insertEvent(transaction, event);
@@ -142,7 +160,10 @@ export class OperationsStore {
       ids?: number[];
     } = {},
   ) {
-    let query = this.db('ops_events').orderBy('id', 'desc').limit(100);
+    let query = this.db('ops_events')
+      .where({ workspaceId: this.workspaceId })
+      .orderBy('id', 'desc')
+      .limit(100);
     if (options.before) query = query.where('id', '<', options.before);
     if (options.kind) query = query.where('kind', options.kind);
     if (options.serviceId) query = query.where('serviceId', options.serviceId);
@@ -163,6 +184,7 @@ export class OperationsStore {
     await this.serial(() =>
       this.db.transaction(async transaction => {
         await transaction('ops_documents').insert({
+          workspaceId: this.workspaceId,
           id: document.id,
           kind: document.kind,
           createdAt: document.createdAt,
@@ -182,11 +204,17 @@ export class OperationsStore {
   }
   async documents() {
     return (
-      await this.db('ops_documents').orderBy('createdAt', 'desc').limit(100)
+      await this.db('ops_documents')
+        .where({ workspaceId: this.workspaceId })
+        .orderBy('createdAt', 'desc')
+        .limit(100)
     ).map(row => JSON.parse(row.data)) as OperationDocument[];
   }
   async document(id: string): Promise<OperationDocument | undefined> {
-    const row = await this.db('ops_documents').where({ id }).first();
+    const row = await this.db('ops_documents')
+      .where({ workspaceId: this.workspaceId })
+      .where({ id })
+      .first();
     return row ? JSON.parse(row.data) : undefined;
   }
 
@@ -199,13 +227,16 @@ export class OperationsStore {
         await this.outbox.cancelWaiting(db, false);
         // After the local worker drains, leftover claims came from an interrupted
         // process. Keep their uncertainty; re-enabling must not replay old mail.
-        await db('ops_outbox').where({ status: 'sending' }).update({
-          status: 'uncertain',
-          hadUncertainty: true,
-          nextAttemptAt: null,
-          error:
-            'Notifications disabled during an interrupted delivery. Check provider acceptance before sending again.',
-        });
+        await db('ops_outbox')
+          .where({ workspaceId: this.workspaceId })
+          .where({ status: 'sending' })
+          .update({
+            status: 'uncertain',
+            hadUncertainty: true,
+            nextAttemptAt: null,
+            error:
+              'Notifications disabled during an interrupted delivery. Check provider acceptance before sending again.',
+          });
       }),
     );
   }

@@ -6,7 +6,8 @@ technical explanations and runbooks belong in `docs/`.
 
 - Keep private configurations, keys, databases and real infrastructure records out of commits.
 - Treat demo data as synthetic and stale/missing observations as unknown.
-- Preserve authentication, owner-only writes and the read-only MCP allowlist.
+- Preserve authentication, workspace permissions, administrator-only configuration
+  writes and the read-only MCP allowlist.
 - Do not add arbitrary shell execution or activate cloud resources, CI or email as
   a side effect of local development. Users explicitly configure their own targets.
 - Run meaningful affected checks and report the limits of verification.

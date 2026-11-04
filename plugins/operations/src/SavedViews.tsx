@@ -1,3 +1,5 @@
+import { useWorkspaces } from '@ops-compass/plugin-core';
+import { DEFAULT_WORKSPACE_ID } from '@ops-compass/core';
 import { useEffect, useState } from 'react';
 import { identityApiRef, useApi } from '@backstage/core-plugin-api';
 import { Button, MenuItem, TextField, Typography } from '@material-ui/core';
@@ -17,6 +19,7 @@ export function SavedViews(props: {
   scope: string;
   apply: (query: string, status: string) => void;
 }) {
+  const { selectedId } = useWorkspaces();
   const identity = useApi(identityApiRef);
   const [key, setKey] = useState('');
   const [views, setViews] = useState<View[]>([]);
@@ -28,7 +31,9 @@ export function SavedViews(props: {
     void identity
       .getBackstageIdentity()
       .then(user => {
-        const storageKey = `ops-compass:views:${user.userEntityRef}:${props.scope}`;
+        const storageKey = `ops-compass:views:${user.userEntityRef}:${
+          props.scope
+        }${selectedId === DEFAULT_WORKSPACE_ID ? '' : `:${selectedId}`}`;
         const stored = JSON.parse(localStorage.getItem(storageKey) ?? '[]');
         const valid = Array.isArray(stored)
           ? stored
@@ -54,7 +59,7 @@ export function SavedViews(props: {
     return () => {
       active = false;
     };
-  }, [identity, props.scope]);
+  }, [identity, props.scope, selectedId]);
   function save(next: View[]) {
     try {
       localStorage.setItem(key, JSON.stringify(next));

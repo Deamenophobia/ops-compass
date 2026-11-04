@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { z } from 'zod/v3';
+import { WorkspaceActor } from '@ops-compass/core-node';
+import { WorkspaceCapability } from '@ops-compass/core';
 import {
   backupInputSchema,
   budgetPreferenceSchema,
@@ -17,14 +19,31 @@ export function createWorkspaceRouter(
   service: WorkspaceService,
   httpAuth: HttpAuthService,
   writers: string[],
+  workspaceActor?: WorkspaceActor,
 ) {
   const router = express.Router();
-  router.use(express.json({ limit: '64kb' }));
+  router.use(
+    [
+      '/workspace',
+      '/notes',
+      '/backups',
+      '/budget-preference',
+      '/notifications',
+    ],
+    express.json({ limit: '64kb' }),
+  );
+  // Worklogs allow 32,000 UTF-16 code units. Reserve space for UTF-8 / JSON
+  // escaping without raising the limit for small configuration endpoints.
+  router.use('/worklogs', express.json({ limit: '256kb' }));
   router.use((_req, res, next) => {
     res.setHeader('Cache-Control', 'no-store');
     next();
   });
-  async function writer(req: Request): Promise<string | undefined> {
+  async function writer(
+    req: Request,
+    capability: WorkspaceCapability,
+  ): Promise<string | undefined> {
+    if (workspaceActor) return workspaceActor(req, capability);
     try {
       const credentials = await httpAuth.credentials(req, { allow: ['user'] });
       const actor = credentials.principal.userEntityRef;
@@ -36,14 +55,15 @@ export function createWorkspaceRouter(
   const handle =
     (
       action: (req: Request, res: Response, actor?: string) => Promise<void>,
-      write = false,
+      capability: 'contribute' | 'admin' | undefined = undefined,
     ) =>
     async (req: Request, res: Response) => {
-      const actor = await writer(req);
-      if (write && !actor) {
+      // Capabilities belong to the handler, never to a separately parsed URL.
+      const actor = await writer(req, capability ?? 'contribute');
+      if (capability && !actor) {
         res.status(403).json({
           error:
-            'A configured workspace owner must perform this action. Agent credentials are read-only.',
+            'Your workspace role does not permit this action. Agent credentials are read-only.',
         });
         return;
       }
@@ -80,8 +100,13 @@ export function createWorkspaceRouter(
   );
   router.get(
     '/workspace',
-    handle(async (_req, res, actor) => {
-      res.json(await service.read(Boolean(actor)));
+    handle(async (req, res, actor) => {
+      res.json({
+        ...(await service.read(Boolean(actor))),
+        canAdmin: workspaceActor
+          ? Boolean(await workspaceActor(req, 'admin'))
+          : Boolean(actor),
+      });
     }),
   );
   router.get(
@@ -95,10 +120,15 @@ export function createWorkspaceRouter(
   );
   router.post(
     '/workspace/refresh',
-    handle(async (_req, res, actor) => {
+    handle(async (req, res, actor) => {
       await service.collect();
-      res.json(await service.read(Boolean(actor)));
-    }, true),
+      res.json({
+        ...(await service.read(Boolean(actor))),
+        canAdmin: workspaceActor
+          ? Boolean(await workspaceActor(req, 'admin'))
+          : Boolean(actor),
+      });
+    }, 'contribute'),
   );
   router.post(
     '/workspace/scenario',
@@ -125,7 +155,7 @@ export function createWorkspaceRouter(
       });
       await service.collect();
       res.json({ active: id });
-    }, true),
+    }, 'admin'),
   );
   router.get(
     '/events',
@@ -196,7 +226,7 @@ export function createWorkspaceRouter(
           actor: actor!,
         }),
       );
-    }, true),
+    }, 'contribute'),
   );
   router.post(
     '/backups',
@@ -225,7 +255,7 @@ export function createWorkspaceRouter(
           markdown: `User-attested verification: ${input.verifiedAt}\nNext check: ${input.dueAt}\n\n${input.evidence}`,
         }),
       );
-    }, true),
+    }, 'contribute'),
   );
   router.post(
     '/worklogs/draft',
@@ -237,7 +267,7 @@ export function createWorkspaceRouter(
           await selectedEvents(input.eventIds),
         ),
       });
-    }, true),
+    }, 'contribute'),
   );
   router.post(
     '/worklogs',
@@ -259,7 +289,7 @@ export function createWorkspaceRouter(
           actor: actor!,
         }),
       );
-    }, true),
+    }, 'contribute'),
   );
   router.post(
     '/budget-preference',
@@ -275,12 +305,18 @@ export function createWorkspaceRouter(
         source: 'user-recorded',
       });
       res.json(preference);
-    }, true),
+    }, 'admin'),
   );
   router.get(
     '/notifications',
     handle(async (_req, res, actor) => {
-      res.json(await service.notifications(Boolean(actor)));
+      res.json(
+        await service.notifications(
+          workspaceActor
+            ? Boolean(await workspaceActor(_req, 'admin'))
+            : Boolean(actor),
+        ),
+      );
     }),
   );
   router.get(
@@ -297,14 +333,14 @@ export function createWorkspaceRouter(
         actor!,
       );
       res.json(await service.notifications(true));
-    }, true),
+    }, 'admin'),
   );
   router.post(
     '/notifications/test',
     handle(async (_req, res) => {
       await service.testNotification();
       res.status(202).json(await service.notifications(true));
-    }, true),
+    }, 'admin'),
   );
   router.post(
     '/notifications/:id/cancel',
@@ -312,7 +348,7 @@ export function createWorkspaceRouter(
       const id = z.string().uuid().parse(req.params.id);
       await service.store.outbox.cancel(id);
       res.json(await service.notifications(true));
-    }, true),
+    }, 'admin'),
   );
   router.post(
     '/notifications/:id/receipt',
@@ -322,7 +358,7 @@ export function createWorkspaceRouter(
         .regex(/^(event-\d+|[a-f0-9-]{36})$/)
         .parse(req.params.id);
       res.json(await service.store.acknowledge(id, actor!));
-    }, true),
+    }, 'admin'),
   );
   return router;
 }

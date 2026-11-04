@@ -7,12 +7,15 @@ decisions; this page explains how the files work together.
 
 1. `packages/app/src/App.tsx` installs the catalog, sidebar, theme and operations
    plugin. `plugins/operations/src/plugin.tsx` declares the custom operations,
-   workspace, inventory and agent routes.
+   workspace, inventory and agent routes. `routes.ts` supplies their native route
+   references; `OperationsLink.tsx` resolves configured paths inside page content.
 2. `OperationsPage.tsx` asks Backstage discovery for the operations API location.
    Its authenticated fetch API supplies the user identity; the page does not handle
    a secret or hardcode a production backend URL.
-3. `plugins/operations-backend/src/index.ts` selects the configured provider,
-   registers MCP actions and mounts `router.ts` inside Backstage authentication.
+3. `plugins/operations-backend/src/index.ts` validates the selected workspace and
+   authorizes it through Backstage permissions. `runtime.ts` owns each workspace's
+   provider, feature choices, jobs and routes. The core packages supply memberships
+   and UI selection; see [Core development](core-development.md).
 4. `agent.ts` owns the shared evidence service. It calls the provider and the common
    evaluator, and redacts source exceptions before HTTP or MCP can return them.
 5. `plugins/operations-common/src/index.ts` validates the snapshot, checks age and
@@ -45,6 +48,21 @@ an observed failure. These rules are shared by the frontend and agent responses.
   over SSH. It reduces results to a small schema and replaces the output atomically.
   A running Docker process without a passing health check remains unknown.
 
+## Follow a dependency lookup
+
+`dependencies/useDependencyCatalog.ts` uses the existing Backstage catalog API for
+bounded Component/Resource search and direct `dependsOn`/`dependencyOf` relations.
+`DeclaredGraph.tsx` reuses the catalog graph renderer, isolated from health-clock
+updates. It shows one hop and switches direction on narrow screens. Catalog
+relations remain shared installation metadata, not workspace-owned traffic evidence.
+
+`useDependencyEvidence.ts` reads the authenticated workspace overview. `model.ts`
+matches exact entity references, advances expiry from server evaluation time and
+aggregates each entity's own checks. Failures clear checks; older responses cannot
+cross workspace identities. Consumers never inherit a dependency's health state.
+The Kubernetes hook only polls when that separate module is enabled. The feature
+adds no backend route or database migration; old saved feature flags default off.
+
 ## Follow an agent request
 
 `actions.ts` registers the three native Backstage actions. `app-config.yaml` defines
@@ -69,8 +87,9 @@ model-response quality and injection resilience require separate evaluation.
 panel keeps its form and explanation together; `presentation.ts` holds styles and
 evidence descriptions. `useOperationsApi.ts` supplies authenticated, bounded requests.
 
-`workspaceRouter.ts` checks a real user principal against `opsCompass.writers`
-before any mutation. `store.ts` serializes state transitions and uses database
+`workspaceRouter.ts` requires workspace `contribute` or `admin` permission before
+a mutation; the outer router also checks workspace read access. `opsCompass.writers`
+is now a one-time bootstrap list for the personal workspace. `store.ts` serializes state transitions and uses database
 transactions for a document with its journal event. `workspace.ts` coordinates
 collection, duplicate suppression, drafts and notification attempts. `integrations.ts`
 isolates GitLab, AWS Budgets, SNS and Resend. Their errors are redacted at the API

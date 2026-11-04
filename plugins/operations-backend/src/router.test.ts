@@ -1,4 +1,9 @@
 import express from 'express';
+import { delegatedTestAuth } from './__testUtils__/permissions';
+import { permissionsServiceFactory } from '@backstage/backend-defaults/permissions';
+import { permissionsRegistryServiceFactory } from '@backstage/backend-defaults/permissionsRegistry';
+import permissionBackend from '@backstage/plugin-permission-backend';
+import { workspacePermissionModule } from '@ops-compass/core-node';
 import request from 'supertest';
 import {
   mockCredentials,
@@ -66,8 +71,14 @@ it('uses the actual Backstage authentication boundary', async () => {
   const { server } = await startTestBackend({
     features: [
       operationsPlugin,
+      delegatedTestAuth,
+      permissionsServiceFactory,
+      permissionsRegistryServiceFactory,
+      permissionBackend,
+      workspacePermissionModule,
       mockServices.rootConfig.factory({
         data: {
+          permission: { enabled: true },
           opsCompass: { mode: 'unconfigured', writers: ['user:default/owner'] },
         },
       }),
@@ -158,7 +169,7 @@ it('uses the actual Backstage authentication boundary', async () => {
     .expect(409);
   const response = await request(server)
     .get('/api/operations/overview')
-    .set('Authorization', mockCredentials.user.header())
+    .set('Authorization', owner)
     .timeout({ deadline: 5000 })
     .expect(200);
   expect(response.body).toMatchObject({

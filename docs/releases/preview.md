@@ -1,45 +1,60 @@
-# First public preview
+# Workspace and infrastructure observation preview
 
-Snapshot version: **0.1.0**, 26 September 2026. License: MIT for original project materials;
-third-party licenses are preserved separately.
+Source preview: **0.2.0-alpha.1**, reviewed 4 November 2026. Original project
+materials use MIT; third-party licenses are preserved. This update is published as
+ordinary branch commits, without version tags or a GitHub release entry.
 
-The original source snapshots remain available at the
-[main commit](https://github.com/Deamenophobia/ops-compass/tree/e24db8f6f14889af2e1846ce446518991c4ce329)
-and [demo commit](https://github.com/Deamenophobia/ops-compass/tree/01cc87a18dcd85eaac82eac3e7271d15a065977c).
-Use these commits when reproducing the original preview.
-
-Start with [Local setup](../guides/local-setup.md), then [choose optional features](../guides/features.md).
-`main` has no sample workloads. `demo` adds synthetic observations and an
+Start with [Local setup](../guides/local-setup.md) and
+[optional features](../guides/features.md). `main` starts without sample workloads;
+`demo` adds synthetic observations and an
 [illustrated walkthrough](https://github.com/Deamenophobia/ops-compass/blob/demo/docs/guides/demo-gallery.md).
 
-## Verification inherited from the application review
+## What changed
 
-A separate clean development checkout was installed on Windows with Node 22.14.0,
-Python 3.12.10 and Yarn 4.13.0. Immutable install, type checking, lint, frontend/backend
-builds and strict handbook generation passed. Verification included 18 common tests,
-65 backend tests, 23 Python tests and 10 deterministic model-client tests.
-Seven browser flows passed on each branch. A real local MCP SDK connection checked
-the exact three-tool allowlist, tool calls, scoped authentication and rejected requests.
+- Modular core and personal/team workspace profiles, with membership checks and
+  workspace-scoped operations, settings, connections and delivery records.
+- Optional read-only [Kubernetes observations](../guides/kubernetes.md): deployment
+  readiness, pod restarts and warning summaries from explicitly collected snapshots.
+- Optional [declared dependencies](../guides/dependencies.md): applications,
+  databases and caches linked through catalog relationships, alongside each entity's
+  own checks. Missing evidence stays unknown; failures do not propagate automatically.
+- Upgrade/backup/rollback rehearsals, synthetic examples and refreshed dependencies.
 
-These are application-review results, not claims of live AWS access, email delivery
-or a real model evaluation. Public export checks are recorded in `release-manifest.json`
-and the published release notes.
+## Verification
 
-## Limits to account for
+The combined application review used Windows, Node 22.14.0, Python 3.12.10 and
+Yarn 4.13.0. Type checking, repository lint, frontend/backend builds and strict
+handbook generation passed. Tests cover 120 application cases in 24 suites,
+28 Python collector/client cases, 10 model-client cases and 8 public-export cases.
+The publication worklog records the final export and dependency checks.
+
+The actual previous public application (`f667789`) was exercised with a synthetic
+journal through its authenticated HTTP API. Upgrade retained notes, budget choices
+and saved features; workspace ownership/isolation, restart, restored candidate
+backup and pre-upgrade rollback passed. New features stay disabled for existing
+saved choices. Browser checks covered desktop/mobile, disabled routes, empty search,
+source failure, recovery and independent database/consumer health. Gallery captures
+contain synthetic data only.
+
+The local Kubernetes harness was attempted again before publication. Docker had no
+usable Linux engine and WSL2 reported disabled virtualization. No cluster was
+created: real API, TLS and RBAC integration stages remain **unverified**. Mocked
+collector tests are not a substitute. See the [Kubernetes record](kubernetes.md)
+and [repeatable rehearsals](../guides/release-preparation.md).
+
+## Limits
 
 | Area | Current boundary |
 | --- | --- |
-| Sign-in | Guest is for loopback development. Hosting requires configured identity and persistent storage. |
-| Connections | Preparing/saving/testing a profile does not start a collection schedule or establish service health. |
-| Observations | Snapshots expire. Portal refresh does not run SSH; collectors are separate. |
-| Email | Starts disabled. A provider's acceptance is distinct from inbox receipt. Delivery runs inside the backend. |
-| Storage | SQLite assumes a single backend. Preserve and verify backups before an upgrade. |
-| AI | Read-only MCP/HTTP context and an optional external model client; no built-in chat or autonomous repairs. |
-| Cloud and deployment | Examples need user-selected targets, credentials and environment-specific verification. CI is inactive. |
-| Dependencies | The installed set has React/Material UI peer-range warnings. Windows can omit optional `cpu-features` when a compiler is unavailable. |
-| Dependency advisories | After the release fixes, the registry audit reports 7 moderate and 1 low finding, with none high/critical. See the [dependency review](dependency-review.md); this is not an advisory-free release. |
-| Platforms | The fresh-install review covered Windows/Node 22. It did not freshly verify Node 24, Linux/WSL or a Docker image build. |
+| Identity | Guest login is for loopback development. Hosting needs configured identity and persistent storage. |
+| Workspaces | Operational data is scoped; catalog, search and TechDocs remain shared within a trusted installation. This is not full Backstage multi-tenancy. |
+| Observations | Snapshots expire; refresh does not run SSH or Kubernetes collection. No orchestration, traffic discovery or automatic root-cause inference. |
+| Storage | SQLite assumes one backend. Preserve configuration and verify backups before upgrading. |
+| Connections and AI | Profiles require user configuration. MCP is read-only; model, cloud, email and team OAuth integrations need installation-specific verification. |
+| Dependencies | Registry audit: 13 advisories, including 2 high, 9 moderate and 2 low; none critical. The [assessment](dependency-review.md) covers the remaining paths and Zod compatibility risk. This is not an advisory-free or production-ready release. |
+| Platforms | Fresh installation was reviewed on Windows/Node 22. Node 24, Linux/WSL and Docker image builds were not freshly verified. Existing React/Material UI peer warnings and optional Windows cpu-features compilation warnings remain. |
 
-The release exports tracked source with public documentation and a fresh public Git
-history. Private development logs, local credentials, journals and infrastructure
-records are excluded. Public updates will continue from this history.
+Publication exports reviewed tracked source into the existing public Git history.
+Private worklogs, credentials, journals and infrastructure records are excluded.
+CI and deployments remain inactive. Historical [first-preview notes](v0.1.0.md)
+retain their original scope and results.

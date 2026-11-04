@@ -1,43 +1,72 @@
-# Dependency review — 26 September 2026
+# Dependency review — 4 November 2026
 
-The release audit uses `yarn npm audit --all --recursive --json`, including
-development and transitive dependencies. It is a registry-advisory check, not a
-complete assessment of exploitability or application security.
+The full registry audit (`yarn npm audit --all --recursive --json`) covers runtime,
+development and transitive dependencies. It reports advisory records, not unique
+packages or verified exploitable paths. See [structured results](dependency-audit.json).
 
-The initial lockfile reported 34 security advisories: 1 critical, 14 high,
-18 moderate and 1 low. The reviewed lockfile reports **8 advisories: 7 moderate,
-1 low, and no high or critical results**. Nineteen separate deprecation records
-remain. See [the structured results](dependency-audit.json).
+The starting lockfile reported **88 advisories: 4 critical, 33 high, 37 moderate,
+14 low**. After compatible updates it reports **13: 0 critical, 2 high, 9 moderate,
+2 low**. This supersedes the September audit; newly published advisories make that
+historical result unsuitable for assessing this candidate.
 
 ## Changes made
 
-- Pin node-gyp 12.4.0 for root and injected build dependencies. It supports the
-  tested Node 22.14 environment and uses the current tar 7 dependency. The old
-  tar 6 path and incompatible node-gyp 13 injection are removed.
-- Resolve adm-zip 0.6.0 to its 0.6.1 patch.
-- Resolve PrismJS's legacy 1.27 selection to 1.30.0.
-- Resolve all existing protobufjs 7 ranges to 7.6.6. Retain the separate 8.x
-  dependency rather than forcing all consumers onto one major version.
+- Refresh affected compatible lockfile ranges, including catalog-backend 4.0.2,
+  Azure identity/MSAL, DOMPurify, Handlebars, Hono and shell-quote.
+- Update the MCP SDK pin to 1.32.0 and direct Zod pins to 4.6.7. Keep the shared
+  Backstage Zod v3 compatibility imports aligned to avoid duplicate-type failures.
+- Update catalog-model to 1.10.2, including the frontend's exact pin and compatible
+  transitive ranges, plus compatible CLI auth/new module patches. These remove Zod
+  3.25.76 from the lockfile. The earlier report's CLI-only attribution was incomplete:
+  catalog-model 1.10.1 also retained that version. Audit parent lists are not an
+  exhaustive dependency-path inventory.
+- Resolve the federation plugin's exact undici 7.29.0 dependency to 7.30.1.
+- Preserve the existing node-gyp, adm-zip, PrismJS and protobufjs resolutions and
+  the three-day minimum package age setting.
 
-These changes are part of the locked release input. Installation passes with the
-existing React/Material UI peer warnings and optional cpu-features compiler failure.
+Installation retains known React/Material UI peer warnings and the optional Windows
+`cpu-features` compiler failure. Verification is recorded in
+[release preparation](../guides/release-preparation.md).
 
-## Remaining advisories
+## Remaining findings
 
-| Package | Remaining advisory |
+| Package / severity | Required follow-up |
 | --- | --- |
-| @octokit/plugin-paginate-rest | [Regular-expression denial of service](https://github.com/advisories/GHSA-h5c3-5r3r-rr8q) |
-| @octokit/request | [Regular-expression denial of service](https://github.com/advisories/GHSA-rmvr-2pp2-xj38) |
-| @octokit/request-error | [Regular-expression denial of service](https://github.com/advisories/GHSA-xx4v-prfh-6cgc) |
-| file-type | [Malformed ASF input loop](https://github.com/advisories/GHSA-5v7r-6r5c-r473) |
-| react-router | [Navigation URL handling](https://github.com/advisories/GHSA-wrjc-x8rr-h8h6), [SSR error deserialization](https://github.com/advisories/GHSA-337j-9hxr-rhxg) |
-| uuid | [Buffer bounds checking](https://github.com/advisories/GHSA-w5hq-g745-h8pq) |
-| elliptic | [Cryptographic implementation concern](https://github.com/advisories/GHSA-848j-6mx2-7j84) |
+| [@graphql-tools/utils — high](https://github.com/advisories/GHSA-7mx3-vvmw-hjmv) | Versions 8.9.0/8.13.1 through mockttp and GraphQL schema dependencies. Upgrade their parents to a generation using patched utils (12.0.1 or later). |
+| [basic-ftp — high](https://github.com/advisories/GHSA-c475-qrg2-pj4r) | get-uri retains 5.3.1; patched 6.2.1 is outside its current major range. Review the proxy/URI dependency upgrade. |
+| @octokit/plugin-paginate-rest, request, request-error — moderate | Older Octokit generations remain; see advisory links and parent paths in the structured report. |
+| file-type, glob, minimatch, react-router, uuid — moderate | Patched versions cross dependency/API generations. React Router has two advisory records. |
+| deepmerge, elliptic — low | Retained transitive findings; review upstream remediation. |
 
-The unresolved findings involve older transitive/API generations or a package
-without a patched release. They are retained visibly rather than suppressed or
-forced across major versions during this preview. The installed set is not
-advisory-free, and this review does not claim these findings are unreachable.
-Framework/provider upgrades and deployment-specific exposure review remain work
-before broader hosting. Local examples bind to loopback and integrations begin
-unconfigured; that is the intended evaluation scope of this preview.
+## Exposure assessment for this preview
+
+The two high findings are installed through production dependencies:
+catalog/search backend → backend-openapi-utils → mockttp. They must not be
+dismissed as absent merely because their intended use is testing.
+
+- GraphQL utils is reached through mockttp/schema utilities. The advisory concerns
+  merging attacker-controlled GraphQL results. This portal does not configure a
+  GraphQL supergraph or Mockttp administrative server.
+- basic-ftp is reached through mockttp → pac-proxy-agent → get-uri. Its vulnerable
+  directory parser consumes a malicious FTP server's listing. This portal does not
+  configure FTP/PAC sources.
+- Inspection of backend-openapi-utils 0.7.2/0.7.3 separates the normal router export
+  from `testUtils`, which imports and starts the Mockttp proxy. A fresh Node process
+  importing the normal entry point loaded **zero** mockttp, GraphQL Tools, get-uri
+  or basic-ftp modules in its CommonJS cache. This is a bounded entry-point check,
+  not proof of unreachability throughout every dependency or future configuration.
+
+The [Zod advisory](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5) no longer
+matches an installed package version. However, Backstage and this application still
+use `zod/v3` compatibility APIs. A bounded probe with 128 invalid array elements
+and `.max(2)` produced 129 issues: length validation alone does not stop per-item
+work in this API. No general resource-exhaustion fix is claimed. Existing operation
+routes have explicit JSON body limits; observation files have byte limits before
+schema validation. These limits do not prove every upstream catalog path bounded.
+
+Accept these residual risks only for the documented local, trusted-input source
+preview. Keep integrations unconfigured until reviewed, restrict catalog writers,
+and assess request/rate limits before exposing an installation. Follow up on the
+upstream proxy dependencies and compatibility validation before a hosted production
+release. No finding is suppressed, no untested major override is forced, and this
+record does not claim production readiness or an advisory-free installation.

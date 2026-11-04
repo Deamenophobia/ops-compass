@@ -30,7 +30,7 @@ Browser / React ── authenticated HTTP ──┐
 External AI client ── MCP tools ────────┘          │
                                       validate + evaluate freshness
                                                  │
-                                 one configured observation source
+                         one explicitly configured source per workspace
                                  /               |                \
                               demo          JSON snapshot      CloudWatch
                                                  ↑
@@ -42,12 +42,30 @@ saved collection; opening or refreshing the page does not run SSH. CloudWatch
 mode reads only configured alarms. Observations are not a historical metrics
 database: their source and timestamps must accompany any saved incident record.
 
+## Kubernetes observations
+
+The optional [Kubernetes module](guides/kubernetes.md) uses a separate, explicit
+HTTPS collector and validated snapshot. A workspace's authenticated route reads
+only its configured file. Shared schemas evaluate freshness, deployment generation
+and pod readiness; the page links observations to catalog components. Cluster
+credentials never enter portal configuration. This adapter follows Backstage's
+service view while retaining workspace isolation and saved evidence. It adds no
+orchestration or background cluster access.
+
+The optional [dependency view](guides/dependencies.md) reuses Backstage's catalog
+relations and graph renderer. It joins logical applications and resources to their
+own workspace observations, without turning declarations into observed traffic or
+propagating health between entities. It has no new backend endpoint or storage.
+
 ## Repository map
 
 | Location                     | Responsibility                                                       |
 | ---------------------------- | -------------------------------------------------------------------- |
 | `packages/app`               | React entry point, theme, sidebar and plugin assembly                |
 | `packages/backend`           | Backend plugin registration and deployment template                  |
+| `packages/ops-compass-core` | Workspace contracts and native permission definitions |
+| `packages/ops-compass-core-node` | Membership storage, permission policy and server adapters |
+| `plugins/ops-compass-core` | Workspace selection and administration UI |
 | `plugins/operations`         | Operations, Workspace, AWS inventory and Agent access pages          |
 | `plugins/operations-backend` | Providers, authenticated routes, runbooks and MCP actions            |
 | `plugins/operations-common`  | Shared schemas, types and freshness evaluation                       |
@@ -70,6 +88,14 @@ restricted to the operations and MCP plugins. An exact three-action allowlist
 exposes overview, runbook and context reads. The project does not run a model;
 the connected AI client supplies one. Details are in [Agent access](guides/agent-access.md).
 
+## Workspace profiles and core
+
+The [workspace guide](guides/workspaces.md) describes personal/team configuration,
+roles and migration. The [core guide](guides/core-development.md) explains the plugin
+boundaries. Personal is the default; team uses the same app and release. Backstage
+permissions authorize workspace reads and mutations. Operational tables and runtime
+clients are workspace-scoped; catalog, search and TechDocs remain shared.
+
 ## Current scope and limits
 
 The portal has catalog and TechDocs integration, unconfigured/demo/SSH/CloudWatch modes,
@@ -79,8 +105,9 @@ email delivery need verification in each configured environment. Healthy checks 
 availability, successful backups or inbox delivery.
 
 The operations workspace stores transitions, notes, backup attestations and reviewed
-Markdown worklogs. Its timer observes sources while the backend is running. Owner-only
-writes require a configured user identity; MCP/service credentials cannot perform them.
+Markdown worklogs. Its timer observes sources while the backend is running. Workspace
+members can contribute records; administrators configure features, connections and
+notification routes. MCP/service credentials cannot perform these mutations.
 GitLab and AWS adapters are optional. Email recipients and planning amounts start blank.
 Versioned migrations preserve existing records, and a transactional notification
 queue supports background delivery and bounded recovery. See

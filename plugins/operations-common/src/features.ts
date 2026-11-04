@@ -2,6 +2,18 @@ import { z } from 'zod/v3';
 
 export const featureDefinitions = [
   {
+    id: 'dependencies',
+    title: 'Service dependencies',
+    description:
+      'Explore declared application and database relationships alongside workspace observations.',
+  },
+  {
+    id: 'kubernetes',
+    title: 'Kubernetes observations',
+    description:
+      'Read collected deployment readiness, pods and warning events by catalog service.',
+  },
+  {
     id: 'services',
     title: 'Services and pipelines',
     description:
@@ -56,6 +68,8 @@ export const featureDefinitions = [
 export type FeatureId = (typeof featureDefinitions)[number]['id'];
 export const featureFlagsSchema = z
   .object({
+    dependencies: z.boolean().default(false),
+    kubernetes: z.boolean().default(false),
     services: z.boolean(),
     inventory: z.boolean(),
     connections: z.boolean(),

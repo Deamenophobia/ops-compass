@@ -203,6 +203,7 @@ export function useWorkspaceModel() {
     setMarkdown,
     note,
     canWrite,
+    canAdmin: Boolean(data?.canAdmin) && !busy,
     selectTab,
     run,
     shownEvents,

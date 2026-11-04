@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "source": "demo",
+  "observations": [
+    {
+      "id": "orders-database-check",
+      "entityRef": "resource:default/orders-database",
+      "label": "Database connection check",
+      "environment": "demo",
+      "region": "local-example",
+      "state": "critical",
+      "observedAt": "2026-11-04T00:00:00.000Z",
+      "summary": "Synthetic database connection timeout. This example did not query a database."
+    },
+    {
+      "id": "orders-api-check",
+      "entityRef": "component:default/order-service",
+      "label": "Orders API readiness",
+      "environment": "demo",
+      "region": "local-example",
+      "state": "healthy",
+      "observedAt": "2026-11-04T00:00:00.000Z",
+      "summary": "Synthetic API readiness returned success. This check does not verify every database-dependent operation."
+    },
+    {
+      "id": "orders-worker-check",
+      "entityRef": "component:default/market-worker",
+      "label": "Worker heartbeat",
+      "environment": "demo",
+      "region": "local-example",
+      "state": "healthy",
+      "observedAt": "2026-11-04T00:00:00.000Z",
+      "summary": "Synthetic worker heartbeat. A heartbeat does not prove that database writes succeed."
+    }
+  ]
+}

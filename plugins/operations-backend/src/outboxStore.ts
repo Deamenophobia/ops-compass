@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import { DEFAULT_WORKSPACE_ID } from '@ops-compass/core';
 import {
   NotificationAttempt,
   NotificationSettings,
@@ -30,7 +31,10 @@ export type NotificationJob = {
 };
 
 export class OutboxStore {
-  constructor(private readonly db: Database) {}
+  constructor(
+    private readonly db: Database,
+    private readonly workspaceId = DEFAULT_WORKSPACE_ID,
+  ) {}
 
   async enqueue(
     input: PendingNotification,
@@ -41,8 +45,9 @@ export class OutboxStore {
     const createdAt = new Date(now).toISOString();
     await db('ops_outbox')
       .insert({
+        workspaceId: this.workspaceId,
         id: randomUUID(),
-        dedupeKey,
+        dedupeKey: `${this.workspaceId}:${dedupeKey}`,
         kind: input.kind,
         createdAt,
         status: 'queued',
@@ -56,6 +61,7 @@ export class OutboxStore {
   async enqueueTest(input: PendingNotification, now = Date.now()) {
     await this.db.transaction(async transaction => {
       const recent = await transaction('ops_outbox')
+        .where({ workspaceId: this.workspaceId })
         .where({ kind: 'test' })
         .where('createdAt', '>', new Date(now - 60000).toISOString())
         .first();
@@ -66,6 +72,7 @@ export class OutboxStore {
 
   async attempts(): Promise<NotificationAttempt[]> {
     const rows: NotificationJob[] = await this.db('ops_outbox')
+      .where({ workspaceId: this.workspaceId })
       .orderBy('createdAt', 'desc')
       .orderBy('id')
       .limit(100);
@@ -100,6 +107,7 @@ export class OutboxStore {
       cancelled: 0,
     };
     const rows = await this.db('ops_outbox')
+      .where({ workspaceId: this.workspaceId })
       .select('status')
       .count<
         Array<{ status: NotificationAttempt['status']; total: string | number }>
@@ -111,6 +119,7 @@ export class OutboxStore {
 
   async abandoned(now: number): Promise<NotificationJob[]> {
     return this.db('ops_outbox')
+      .where({ workspaceId: this.workspaceId })
       .where({ status: 'sending' })
       .where('lastAttemptAt', '<=', new Date(now - 120000).toISOString())
       .limit(100);
@@ -118,6 +127,7 @@ export class OutboxStore {
 
   async next(now: number): Promise<NotificationJob | undefined> {
     return this.db('ops_outbox')
+      .where({ workspaceId: this.workspaceId })
       .whereIn('status', ['queued', 'retrying'])
       .where('nextAttemptAt', '<=', new Date(now).toISOString())
       .orderBy('createdAt')
@@ -127,6 +137,7 @@ export class OutboxStore {
 
   async update(job: NotificationJob, changes: Partial<NotificationJob>) {
     return this.db('ops_outbox')
+      .where({ workspaceId: this.workspaceId })
       .where({ id: job.id, status: job.status, attemptCount: job.attemptCount })
       .update(changes);
   }
@@ -151,11 +162,13 @@ export class OutboxStore {
   async cancel(id: string) {
     await this.db.transaction(async transaction => {
       const row: NotificationJob | undefined = await transaction('ops_outbox')
+        .where({ workspaceId: this.workspaceId })
         .where({ id })
         .first();
       if (!row || !['queued', 'retrying'].includes(row.status))
         throw new Error('Only waiting jobs can be cancelled');
       const cancelled = await transaction('ops_outbox')
+        .where({ workspaceId: this.workspaceId })
         .where({ id, status: row.status, attemptCount: row.attemptCount })
         .update({
           status: row.hadUncertainty ? 'uncertain' : 'cancelled',
@@ -169,7 +182,9 @@ export class OutboxStore {
   }
 
   async cancelWaiting(db: Database, transitionsOnly: boolean) {
-    let query = db('ops_outbox').whereIn('status', ['queued', 'retrying']);
+    let query = db('ops_outbox')
+      .where({ workspaceId: this.workspaceId })
+      .whereIn('status', ['queued', 'retrying']);
     if (transitionsOnly) query = query.where({ kind: 'transition' });
     await query.update({
       status: db.raw('CASE WHEN ?? THEN ? ELSE ? END', [
@@ -185,14 +200,24 @@ export class OutboxStore {
 
   async acknowledge(id: string, actor: string) {
     const job: NotificationJob | undefined = await this.db('ops_outbox')
+      .where({ workspaceId: this.workspaceId })
       .where({ id })
       .first();
     if (!job || !['accepted', 'simulated'].includes(job.status))
       throw new Error('No accepted notification with this ID');
-    await this.db('ops_outbox').where({ id }).whereNull('receivedAt').update({
-      receivedAt: new Date().toISOString(),
-      receivedBy: actor,
-    });
-    return this.view(await this.db('ops_outbox').where({ id }).first());
+    await this.db('ops_outbox')
+      .where({ workspaceId: this.workspaceId })
+      .where({ id })
+      .whereNull('receivedAt')
+      .update({
+        receivedAt: new Date().toISOString(),
+        receivedBy: actor,
+      });
+    return this.view(
+      await this.db('ops_outbox')
+        .where({ workspaceId: this.workspaceId })
+        .where({ id })
+        .first(),
+    );
   }
 }

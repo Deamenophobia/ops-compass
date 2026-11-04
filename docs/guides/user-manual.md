@@ -48,6 +48,13 @@ the containers' OCI revision labels. Missing revisions or old observations make
 the comparison unknown. A successful pipeline or matching commit does not establish
 that an endpoint works. These controls do not trigger pipelines or deployments.
 
+## Service and database relationships
+
+Enable **Service dependencies**, open **Dependencies**, and select a catalog entity.
+Review its declared **Depends on** and **Used by** relationships alongside its own
+available checks. A dependency problem indicates potential impact and does not
+change a consumer's reported status. See [setup and interpretation](dependencies.md).
+
 ## Operations history
 
 Open **Workspace → History**. The collector records state transitions, source

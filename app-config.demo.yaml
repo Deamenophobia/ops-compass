@@ -15,6 +15,9 @@ catalog:
       target: ../../catalog/demo.yaml
 opsCompass:
   mode: demo
+  kubernetes:
+    file: ../../examples/kubernetes-snapshot.example.json
+    maxAgeSeconds: 300
   inventory:
     file: ../../demo/inventory.json
     maxAgeSeconds: 300
@@ -41,3 +44,7 @@ opsCompass:
       description: The synthetic provider is unavailable. Current service details clear while historical records remain. Choose another scenario here to recover.
       file: ../../demo/observations.json
       unavailable: true
+    - id: database-dependency
+      title: Database dependency
+      description: A synthetic database check fails while the Orders API check still passes. Declared dependents indicate potential impact, not an automatic failure verdict.
+      file: ../../demo/database-dependency.json

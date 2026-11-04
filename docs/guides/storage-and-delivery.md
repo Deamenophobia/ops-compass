@@ -20,7 +20,13 @@ The queue runs inside the portal backend; it is not a separate monitoring servic
 
 Migration `001-journal` adopts the original tables and validates their required
 columns. `002-notification-outbox` creates the queue and imports legacy attempts.
-Knex records applied names in `ops_migrations` and uses its migration lock. Upgrades
+`003-workspace-scope` assigns existing records to `personal` and scopes state keys
+and notification deduplication. The core directory adds `ops_core_workspaces` and
+`ops_core_members`, versioned separately in `ops_core_migrations`. Back up the
+entire operations database so memberships and records are restored together.
+See [Workspaces](workspaces.md) before upgrading or changing profiles.
+
+Knex records operational migrations in `ops_migrations` and uses its migration lock. Upgrades
 run transactionally; an invalid legacy shape or unknown newer migration stops startup.
 Do not delete migration records, change an applied migration, or force-unlock a live
 database. Inspect the failure with the portal stopped and retain the original backup.

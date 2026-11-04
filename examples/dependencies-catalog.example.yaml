@@ -1,0 +1,32 @@
+# Synthetic declarations only. Register this file explicitly to try the example.
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: example-database
+  title: Example PostgreSQL database
+  description: A logical database resource; it may run in a container or a managed service.
+spec:
+  type: database
+  owner: platform-owner
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-orders
+  title: Example orders API
+spec:
+  type: service
+  lifecycle: experimental
+  owner: platform-owner
+  dependsOn: [resource:default/example-database]
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-worker
+  title: Example worker
+spec:
+  type: service
+  lifecycle: experimental
+  owner: platform-owner
+  dependsOn: [resource:default/example-database]

@@ -19,6 +19,10 @@ your own providers with [Workspace setup](guides/workspace-setup.md). Main start
 empty; the [illustrated demo](https://github.com/Deamenophobia/ops-compass/blob/demo/docs/guides/demo-gallery.md)
 walks through synthetic examples without touching real workloads.
 
+Personal and [team workspaces](guides/workspaces.md) use the same application.
+See the [core development guide](guides/core-development.md) for native Backstage
+plugin and permission boundaries.
+
 ## Understand the display
 
 - **Demo workspace:** synthetic examples. No AWS connection.

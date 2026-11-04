@@ -6,7 +6,9 @@ email delivery or restore results. The production sign-in screen uses dummy OAut
 configuration and does not show a completed login. Follow the [user manual](user-manual.md) for daily
 use and [Workspace setup](workspace-setup.md) to connect your own services on **main**.
 
-The feature settings illustrations (37–39) show the latest navigation cleanup.
+The feature settings illustrations (37–39) show optional-module controls.
+Illustration 40 adds the workspace selector and team setup entry point.
+Illustrations 41–42 show Kubernetes observations and refresh-failure handling.
 Earlier screenshots retain their capture dates in `capture.json`; follow
 the current written steps when a menu position differs.
 
@@ -386,6 +388,23 @@ navigation preference.
 
 ![Main without sample observations](../screenshots/08-main-empty.png)
 
+## Personal and team workspaces
+
+Personal mode opens one workspace. Enable `opsCompass.profile: team` in your
+private overlay and restart to create additional workspaces and assign members.
+Use **Workspaces** to create/select a workspace and manage administrator/user roles;
+use **Workspace features** to configure its optional tools. The sidebar selector
+changes the operational context. Catalog and handbook remain shared.
+
+![Workspace selection in an isolated team preview](../screenshots/40-team-workspaces.png)
+
+This illustration shows two synthetic workspaces from the isolated browser test.
+Team sandbox has its own feature settings and no cloud source. Follow the
+[workspace manual](workspaces.md) for membership, source configuration and migration.
+To reproduce it, run `node scripts/test-connections.mjs --team`, review
+`team-workspaces.png` in the printed temporary directory, then copy the illustration
+and update its capture record. The helper uses a fresh journal and stops its backend.
+
 ## Reproduce the gallery
 
 Use the demo branch with its default overlay and an empty private demo database.
@@ -426,3 +445,38 @@ avoid accidentally publishing user records. `docs/screenshots/capture.json` reco
 the fixture hash, revision and capture purposes. Screenshots are illustrations;
 unit, protocol and browser results are documented in the
 [verification worklog](../releases/preview.md).
+
+## Kubernetes observations
+
+Enable **Kubernetes observations** in Workspace features. The demo reads only a
+synthetic snapshot. Deployment readiness, pod status, restarts and warning events
+link back to the catalog service. They do not prove end-to-end application health.
+
+![Synthetic Kubernetes workloads and warnings](../screenshots/41-kubernetes-workloads.jpg)
+
+Refresh reads the saved file. If it fails, the previous observations remain visible
+with unknown current status. A successful refresh recovers; an access rejection
+clears the old observations. The illustration below uses an intentionally invalid
+synthetic file to demonstrate this behavior.
+
+![Failed refresh retains historical observations](../screenshots/42-kubernetes-refresh-failure.jpg)
+
+## Declared application and database dependencies
+
+Select **Database dependency** in Workspace, then open **Dependencies** and choose
+**Orders database**. The map uses catalog declarations. Both consumers point to the
+same fictional database; no database or network connection is opened by this view.
+
+![Synthetic database and its declared consumers](../screenshots/43-database-dependencies.jpg)
+
+The database's synthetic check is critical, while the API and worker checks pass.
+The **Used by** list indicates potential impact without asserting that every
+consumer has failed. Select either consumer to inspect its own evidence. Orders
+cache has no observation and remains unknown.
+
+![Consumer checks remain independent of database health](../screenshots/44-dependency-checks.jpg)
+
+See [Service dependencies](dependencies.md) to register your own relationships.
+
+See [Kubernetes setup](kubernetes.md) and [release preparation](release-preparation.md)
+for collection, permissions and the remaining real-cluster validation step.

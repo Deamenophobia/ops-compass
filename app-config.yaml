@@ -57,6 +57,7 @@ catalog:
     - type: file
       target: ../../catalog/entities.yaml
 opsCompass:
+  profile: personal
   mode: unconfigured
   maxAgeSeconds: 300
   pollSeconds: 60
@@ -69,3 +70,6 @@ mcpActions:
     Cite evidence with timestamps. Demo is synthetic. Stale and missing evidence
     are unknown. Separate facts from hypotheses and never invent completed work.
   namespacedToolNames: true
+
+permission:
+  enabled: true

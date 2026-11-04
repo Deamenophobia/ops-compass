@@ -1,3 +1,4 @@
+import { OperationsLink } from './OperationsLink';
 import { useState } from 'react';
 import { Content, Header, Link, Page } from '@backstage/core-components';
 import {
@@ -467,9 +468,9 @@ export function ConnectionsPage() {
               Keep downloaded files private.
             </Typography>
             <div className={classes.row}>
-              <Link to={kind === 'aws' ? '/inventory' : '/'}>
+              <OperationsLink route={kind === 'aws' ? 'inventory' : 'root'}>
                 View collected evidence
-              </Link>
+              </OperationsLink>
               <Link to="/docs/default/component/ops-compass/guides/connections">
                 Full connection manual
               </Link>
