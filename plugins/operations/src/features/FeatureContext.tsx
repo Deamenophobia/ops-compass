@@ -1,3 +1,4 @@
+import { OperationsLink } from '../OperationsLink';
 import {
   createContext,
   ReactNode,
@@ -9,7 +10,6 @@ import {
 } from 'react';
 import {
   Content,
-  Link,
   Page,
   Progress,
   ResponseErrorPanel,
@@ -137,7 +137,9 @@ export function FeatureGate({
             </Typography>
           </>
         )}
-        <Link to="/features">Manage workspace features</Link>
+        <OperationsLink route="features">
+          Manage workspace features
+        </OperationsLink>
       </Content>
     </Page>
   );

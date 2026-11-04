@@ -1,0 +1,19 @@
+{
+  "clusters": [
+    {
+      "name": "my-cluster",
+      "url": "https://kubernetes.example.test:6443",
+      "tokenFile": "private/kubernetes-token.txt",
+      "caFile": "private/kubernetes-ca.crt"
+    }
+  ],
+  "targets": [
+    {
+      "cluster": "my-cluster",
+      "namespace": "my-apps",
+      "entityRef": "component:default/my-api",
+      "selector": "app.kubernetes.io/name=my-api",
+      "dashboardUrl": "https://dashboard.example.test/"
+    }
+  ]
+}

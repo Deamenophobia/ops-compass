@@ -21,7 +21,7 @@ export function NotificationsPanel({ model }: { model: WorkspaceModel }) {
     notifications,
     settings,
     setSettings,
-    canWrite,
+    canAdmin,
     run,
   } = model;
   if (!data) return null;
@@ -119,7 +119,7 @@ export function NotificationsPanel({ model }: { model: WorkspaceModel }) {
             )}
             <div className={classes.row}>
               <Button
-                disabled={!canWrite}
+                disabled={!canAdmin}
                 onClick={() =>
                   run(
                     () => api('/notifications/settings', settings),
@@ -132,7 +132,7 @@ export function NotificationsPanel({ model }: { model: WorkspaceModel }) {
               <Button
                 variant="outlined"
                 disabled={
-                  !canWrite ||
+                  !canAdmin ||
                   (!notifications.simulated &&
                     (notifications.settings.provider === 'disabled' ||
                       !notifications.available[
@@ -219,7 +219,7 @@ export function NotificationsPanel({ model }: { model: WorkspaceModel }) {
                 </div>
                 {['queued', 'retrying'].includes(a.status) && (
                   <Button
-                    disabled={!canWrite}
+                    disabled={!canAdmin}
                     onClick={() =>
                       run(
                         () => api(`/notifications/${a.id}/cancel`, {}),
@@ -233,7 +233,7 @@ export function NotificationsPanel({ model }: { model: WorkspaceModel }) {
                 {!a.receivedAt &&
                   ['accepted', 'simulated'].includes(a.status) && (
                     <Button
-                      disabled={!canWrite}
+                      disabled={!canAdmin}
                       onClick={() =>
                         run(
                           () => api(`/notifications/${a.id}/receipt`, {}),

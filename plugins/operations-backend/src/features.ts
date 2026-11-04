@@ -2,6 +2,7 @@ import express from 'express';
 import { Config } from '@backstage/config';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { z } from 'zod/v3';
+import { WorkspaceActor } from '@ops-compass/core-node';
 import {
   FeatureId,
   FeatureState,
@@ -75,14 +76,17 @@ export function createFeatureRouter(
   features: FeatureService,
   auth: HttpAuthService,
   writers: string[],
+  workspaceActor?: WorkspaceActor,
 ) {
   const router = express.Router();
-  router.use(express.json({ limit: '16kb' }));
+  // Keep this limit local: this router precedes worklogs with larger valid bodies.
+  router.use('/features', express.json({ limit: '16kb' }));
   router.use((_req, res, next) => {
     res.setHeader('Cache-Control', 'no-store');
     next();
   });
   const actor = async (req: express.Request) => {
+    if (workspaceActor) return workspaceActor(req, 'admin');
     try {
       const credentials = await auth.credentials(req, { allow: ['user'] });
       const user = credentials.principal.userEntityRef;
@@ -127,29 +131,33 @@ export function createFeatureRouter(
   });
   // Server admission is independent of navigation; direct URLs and agent tokens
   // cannot bypass disabled modules. Core overview and feature settings stay available.
-  router.use((req, res, next) => {
-    const root = req.path.split('/')[1];
-    const requirements: Record<string, readonly FeatureId[]> = {
-      inventory: ['inventory'],
-      connections: ['connections'],
-      agent: ['agent'],
-      notifications: ['notifications'],
-      'budget-preference': ['costs'],
-      worklogs: ['worklogs'],
-      notes: ['maintenance'],
-      backups: ['maintenance'],
-      documents: ['maintenance', 'worklogs'],
-      events: ['history', 'worklogs'],
-      workspace: workspaceFeatures,
-    };
-    if (requirements[root] && !features.any(requirements[root])) {
-      res.status(403).json({
-        error: 'This feature is disabled. Enable it in Workspace features.',
-        code: 'FEATURE_DISABLED',
-      });
-      return;
-    }
-    next();
-  });
+  const requirements: Record<string, readonly FeatureId[]> = {
+    kubernetes: ['kubernetes'],
+    inventory: ['inventory'],
+    connections: ['connections'],
+    agent: ['agent'],
+    notifications: ['notifications'],
+    'budget-preference': ['costs'],
+    worklogs: ['worklogs'],
+    notes: ['maintenance'],
+    backups: ['maintenance'],
+    documents: ['maintenance', 'worklogs'],
+    events: ['history', 'worklogs'],
+    workspace: workspaceFeatures,
+  };
+  for (const [path, required] of Object.entries(requirements)) {
+    // Use the same Express matching rules as the handlers (including case and
+    // trailing slashes), so an alternate spelling cannot skip admission.
+    router.use(`/${path}`, (_req, res, next) => {
+      if (!features.any(required)) {
+        res.status(403).json({
+          error: 'This feature is disabled. Enable it in Workspace features.',
+          code: 'FEATURE_DISABLED',
+        });
+        return;
+      }
+      next();
+    });
+  }
   return router;
 }

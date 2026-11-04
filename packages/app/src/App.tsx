@@ -1,6 +1,7 @@
 import { createApp } from '@backstage/frontend-defaults';
 import catalogPlugin from '@backstage/plugin-catalog/alpha';
 import { navModule } from './modules/nav';
+import corePlugin from '@ops-compass/plugin-core';
 import operationsPlugin from '@ops-compass/plugin-operations';
 import { softThemeModule } from './theme/softTheme';
 import { signInModule } from './modules/signIn';
@@ -13,6 +14,7 @@ export default createApp({
     softThemeModule,
     signInModule,
     featuresModule,
+    corePlugin,
     operationsPlugin,
   ],
 });

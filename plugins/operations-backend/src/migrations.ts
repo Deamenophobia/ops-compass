@@ -105,6 +105,39 @@ const migrations = [
       await db('ops_state').where({ key: 'notification-attempts' }).delete();
     },
   },
+  {
+    name: '003-workspace-scope',
+    async up(db: Database) {
+      // Retain every legacy record under the immutable personal workspace. State
+      // keys become composite so two workspaces can have independent settings.
+      await db.schema.createTable('ops_state_scoped', table => {
+        table.string('workspaceId').notNullable();
+        table.string('key').notNullable();
+        table.text('value').notNullable();
+        table.primary(['workspaceId', 'key']);
+      });
+      const rows = await db('ops_state').select('key', 'value');
+      for (const row of rows)
+        await db('ops_state_scoped').insert({
+          ...row,
+          workspaceId: 'personal',
+        });
+      await db.schema.dropTable('ops_state');
+      await db.schema.renameTable('ops_state_scoped', 'ops_state');
+      for (const name of ['ops_events', 'ops_documents', 'ops_outbox']) {
+        await db.schema.alterTable(name, table => {
+          table.string('workspaceId').notNullable().defaultTo('personal');
+          table.index(['workspaceId']);
+        });
+      }
+      // Match the scoped enqueue key without changing IDs, outcomes or payloads.
+      for (const job of await db('ops_outbox').select('id', 'dedupeKey')) {
+        await db('ops_outbox')
+          .where({ id: job.id })
+          .update({ dedupeKey: `personal:${job.dedupeKey}` });
+      }
+    },
+  },
 ];
 
 export async function migrateDatabase(db: Database) {

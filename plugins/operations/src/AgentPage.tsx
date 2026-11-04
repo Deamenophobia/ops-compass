@@ -1,3 +1,5 @@
+import { useWorkspaces } from '@ops-compass/plugin-core';
+import { WORKSPACE_HEADER } from '@ops-compass/core';
 import { useEffect, useRef, useState } from 'react';
 import {
   discoveryApiRef,
@@ -65,6 +67,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export function AgentPage() {
+  const { selectedId } = useWorkspaces();
   const classes = useStyles();
   const discovery = useApi(discoveryApiRef);
   const fetchApi = useApi(fetchApiRef);
@@ -92,7 +95,7 @@ export function AgentPage() {
       mounted = false;
       activeRequest.current?.abort();
     };
-  }, [discovery]);
+  }, [discovery, selectedId]);
 
   async function preview() {
     // A preview is one captured evidence bundle. Never keep it visible after a
@@ -110,6 +113,7 @@ export function AgentPage() {
       if (observationId.trim())
         query.set('observationId', observationId.trim());
       const response = await fetchApi.fetch(`${base}/agent/context?${query}`, {
+        headers: { [WORKSPACE_HEADER]: selectedId },
         signal: controller.signal,
       });
       if (!response.ok) {
@@ -275,9 +279,13 @@ export function AgentPage() {
                 Connect through MCP
               </Typography>
               <Typography>
-                Use a Streamable HTTP MCP client and a scoped local bearer
-                token. The setup guide includes a launcher that creates the
-                local connection file.
+                Use a Streamable HTTP MCP client. Personal mode supports the
+                scoped local token from the setup guide; team mode requires an
+                authorized Backstage user identity.
+              </Typography>
+              <Typography>
+                Pass <code>workspaceId: {selectedId}</code> in tool arguments to
+                select this workspace.
               </Typography>
               <pre className={classes.code}>
                 {endpoint || 'Discovering endpoint…'}

@@ -1,3 +1,6 @@
+import { OperationsLink } from './OperationsLink';
+import { useWorkspaces } from '@ops-compass/plugin-core';
+import { WORKSPACE_HEADER } from '@ops-compass/core';
 import { useEffect, useState } from 'react';
 import {
   discoveryApiRef,
@@ -126,6 +129,7 @@ function entityPath(ref: string) {
 }
 
 export function OperationsPage() {
+  const { selectedId } = useWorkspaces();
   const features = useFeatures();
   const classes = useStyles();
   const discovery = useApi(discoveryApiRef);
@@ -154,6 +158,7 @@ export function OperationsPage() {
       try {
         const baseUrl = await discovery.getBaseUrl('operations');
         const response = await fetchApi.fetch(`${baseUrl}/overview`, {
+          headers: { [WORKSPACE_HEADER]: selectedId },
           signal: controller.signal,
         });
         if (!response.ok)
@@ -189,7 +194,7 @@ export function OperationsPage() {
       window.clearTimeout(timeout);
       controller.abort();
     };
-  }, [discovery, fetchApi, revision]);
+  }, [discovery, fetchApi, revision, selectedId]);
 
   const observations =
     overview?.observations.filter(
@@ -225,11 +230,15 @@ export function OperationsPage() {
             Refresh observations
           </Button>
           <Link to="/catalog">Software catalog</Link>
-          {features.workspace && <Link to="/workspace">Service workspace</Link>}
-          {features.enabled('connections') && (
-            <Link to="/connections">Connections</Link>
+          {features.workspace && (
+            <OperationsLink route="workspace">Service workspace</OperationsLink>
           )}
-          <Link to="/features">Choose workspace features</Link>
+          {features.enabled('connections') && (
+            <OperationsLink route="connections">Connections</OperationsLink>
+          )}
+          <OperationsLink route="features">
+            Choose workspace features
+          </OperationsLink>
           <Link to="/docs/default/component/ops-compass">
             Operations handbook
           </Link>

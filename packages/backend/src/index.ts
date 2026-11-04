@@ -1,8 +1,11 @@
 import { createBackend } from '@backstage/backend-defaults';
+import { workspacePermissionModule } from '@ops-compass/core-node';
 
 const backend = createBackend();
 backend.add(import('@backstage/plugin-app-backend'));
 backend.add(import('@backstage/plugin-auth-backend'));
+backend.add(import('@backstage/plugin-permission-backend'));
+backend.add(workspacePermissionModule);
 backend.add(import('@backstage/plugin-auth-backend-module-guest-provider'));
 backend.add(import('@backstage/plugin-auth-backend-module-gitlab-provider'));
 backend.add(import('@backstage/plugin-catalog-backend'));

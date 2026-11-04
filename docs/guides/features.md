@@ -19,6 +19,8 @@ changed by these choices.
 | --- | --- | --- |
 | Services and pipelines | Container details and GitLab comparisons | Hides the tab; stops optional pipeline reads and container/pipeline history recording |
 | AWS inventory | Reads the user's collected inventory file | Hides navigation and blocks inventory API reads |
+| Kubernetes observations | Reads a workspace's collected deployment, pod and warning-event snapshot | Hides navigation and blocks the snapshot API; does not stop an external collector |
+| Service dependencies | Declared application/database graph with workspace observations | Hides the page and stops its reads; the shared Catalog Graph and core Operations APIs remain available |
 | Cloud connections | Drafts, saved profiles and explicit access tests | Hides navigation, blocks profile APIs and interrupts active tests |
 | Activity history | Timeline and observed-change recording | Hides the timeline; recording continues only if worklogs or notifications need it |
 | Worklogs | Evidence-based Markdown drafts and saved reports | Blocks report actions and hides the tab; reports remain stored |
@@ -27,14 +29,16 @@ changed by these choices.
 | Maintenance notes | Service notes and backup reminders | Hides the tab and blocks note/backup actions; records remain stored |
 | AI agent interface | Agent page, HTTP context and read-only MCP actions | Hides navigation and rejects every agent HTTP/MCP action before reading evidence |
 
-These are workspace settings, not per-user preferences. Only configured
-`opsCompass.writers` can save them; agent credentials and other signed-in readers
-cannot. Choices persist in the private journal and survive restart. Simultaneous
-edits use revision checks: if another owner changed the choices, use **Reload saved
+These are workspace settings, not per-user preferences. Only workspace administrators
+can save them; agent credentials and other signed-in readers cannot.
+`opsCompass.writers` bootstraps administrators for the personal workspace.
+Choices persist in the private journal and survive restart. Simultaneous
+edits use revision checks: if another administrator changed the choices, use **Reload saved
 choices**, review, then save again.
 
 Sidebar items and workspace tabs follow the choices. Opening an old direct link
-shows a disabled-feature message; calling its API directly is also rejected.
+shows a disabled-feature message; dedicated optional-module APIs are also rejected.
+The dependency view reuses existing core APIs, which remain available independently.
 Other open tabs refresh their choices within five seconds or on window focus.
 If settings cannot be read, optional screens stop rendering until access recovers.
 
@@ -70,7 +74,7 @@ opsCompass:
       agent: false
 ```
 
-Supported keys are `services`, `inventory`, `connections`, `history`, `worklogs`,
+Supported keys are `dependencies`, `kubernetes`, `services`, `inventory`, `connections`, `history`, `worklogs`,
 `notifications`, `costs`, `maintenance` and `agent`. Saved choices take precedence
 on later starts. This configuration is not a user-permission system; keep writer
 identity and provider permissions configured separately. See [private setup](production-setup.md).

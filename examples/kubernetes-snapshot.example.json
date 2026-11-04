@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "source": "demo",
+  "collectedAt": "2026-11-04T00:00:00Z",
+  "targets": [
+    {
+      "cluster": "example-cluster",
+      "namespace": "example-apps",
+      "entityRef": "component:default/example-api",
+      "selector": "app.kubernetes.io/name=example-api",
+      "dashboardUrl": "https://dashboard.example.test/",
+      "coverage": {
+        "deployments": "available",
+        "pods": "available",
+        "events": "available"
+      },
+      "deployments": [
+        {
+          "name": "example-api",
+          "desired": 2,
+          "ready": 1,
+          "available": 1,
+          "updated": 2,
+          "generation": 4,
+          "observedGeneration": 4,
+          "paused": false,
+          "failed": false
+        }
+      ],
+      "pods": [
+        {
+          "name": "example-api-ready",
+          "phase": "Running",
+          "ready": true,
+          "restarts": 0,
+          "terminating": false
+        },
+        {
+          "name": "example-api-waiting",
+          "phase": "Running",
+          "ready": false,
+          "restarts": 3,
+          "terminating": false
+        }
+      ],
+      "warnings": [
+        {
+          "object": "Pod/example-api-waiting",
+          "reason": "BackOff",
+          "count": 3,
+          "lastSeen": "2026-11-04T00:00:00Z"
+        }
+      ]
+    }
+  ]
+}

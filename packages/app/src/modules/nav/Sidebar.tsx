@@ -7,6 +7,7 @@ import {
   SidebarSpace,
 } from '@backstage/core-components';
 import { NavContentBlueprint } from '@backstage/plugin-app-react';
+import { WorkspaceSelector } from '@ops-compass/plugin-core';
 import { SidebarLogo } from './SidebarLogo';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
@@ -25,11 +26,14 @@ export const SidebarContent = NavContentBlueprint.make({
       // Search uses the modal above the main navigation, so omit its page link.
       nav.take('page:search');
       const optional = {
+        dependencies: nav.take('page:operations/dependencies'),
+        kubernetes: nav.take('page:operations/kubernetes'),
         workspace: nav.take('page:operations/workspace'),
         inventory: nav.take('page:operations/inventory'),
         connections: nav.take('page:operations/connections'),
         agent: nav.take('page:operations/agent'),
       };
+      const workspaces = nav.take('page:ops-compass-core');
       const settings = nav.take('page:operations/features');
       // Reserve settings before rest() consumes the remaining navigation items.
       const account = nav.take('page:user-settings');
@@ -39,6 +43,7 @@ export const SidebarContent = NavContentBlueprint.make({
       return (
         <Sidebar>
           <SidebarLogo />
+          <WorkspaceSelector />
           <SidebarGroup label="Search" icon={<SearchIcon />} to="/search">
             <SidebarSearchModal />
           </SidebarGroup>
@@ -47,6 +52,8 @@ export const SidebarContent = NavContentBlueprint.make({
             {nav.take('page:operations')}
             {features.workspace && optional.workspace}
             {features.enabled('inventory') && optional.inventory}
+            {features.enabled('kubernetes') && optional.kubernetes}
+            {features.enabled('dependencies') && optional.dependencies}
             {features.enabled('connections') && optional.connections}
             {features.enabled('agent') && optional.agent}
             {nav.take('page:catalog')}
@@ -63,6 +70,7 @@ export const SidebarContent = NavContentBlueprint.make({
             icon={<UserSettingsSignInAvatar />}
             to="/settings"
           >
+            {workspaces}
             {settings}
             {account}
             {developer}

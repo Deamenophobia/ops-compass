@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { HttpAuthService } from '@backstage/backend-plugin-api';
 import { z } from 'zod/v3';
+import { WorkspaceActor } from '@ops-compass/core-node';
 import {
   savedConnectionInputSchema,
   connectionTestInputSchema,
@@ -11,9 +12,10 @@ export function createConnectionsRouter(
   service: ConnectionService,
   httpAuth: HttpAuthService,
   writers: string[],
+  workspaceActor?: WorkspaceActor,
 ) {
   const router = express.Router();
-  router.use(express.json({ limit: '64kb' }));
+  router.use('/connections', express.json({ limit: '64kb' }));
   const handle =
     (
       action: (req: Request, res: Response, actor?: string) => Promise<void>,
@@ -26,7 +28,11 @@ export function createConnectionsRouter(
         const credentials = await httpAuth.credentials(req, {
           allow: ['user'],
         });
-        if (writers.includes(credentials.principal.userEntityRef))
+        if (
+          workspaceActor
+            ? Boolean(await workspaceActor(req, 'admin'))
+            : writers.includes(credentials.principal.userEntityRef)
+        )
           actor = credentials.principal.userEntityRef;
       } catch {
         /* Backstage's outer router authenticates readers; agents cannot write or test. */

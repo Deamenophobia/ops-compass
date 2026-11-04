@@ -13,7 +13,7 @@ export function CostsPanel({ model }: { model: WorkspaceModel }) {
     setAmount,
     currency,
     setCurrency,
-    canWrite,
+    canAdmin,
     run,
     budget,
     budgetLimit,
@@ -117,7 +117,7 @@ export function CostsPanel({ model }: { model: WorkspaceModel }) {
                 inputProps={{ maxLength: 3 }}
               />
               <Button
-                disabled={!canWrite || !amount}
+                disabled={!canAdmin || !amount}
                 onClick={() =>
                   run(
                     () =>

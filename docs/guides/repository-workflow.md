@@ -13,6 +13,14 @@ Application code is shared. Stop the portal before changing branches; ignored
 private files can survive a checkout. Local launchers load the demo overlay when
 present unless the user explicitly selects a real source. See [Local setup](local-setup.md).
 
+## One release, two workspace profiles
+
+Personal mode stays the default. Team mode adds operational workspaces and roles
+through configuration; both use the same core packages and release. `main` and
+`demo` share the application, with synthetic content added only to demo. There are
+no permanent personal/team code branches. The [original personal preview commit](https://github.com/Deamenophobia/ops-compass/tree/e24db8f6f14889af2e1846ce446518991c4ce329)
+preserves its source. See [Workspaces](workspaces.md) for upgrading existing data.
+
 ## Following releases
 
 Clone the branch you need and retain your private settings outside version control.

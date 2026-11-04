@@ -1,3 +1,4 @@
+import { OperationsLink } from './OperationsLink';
 import {
   Content,
   Header,
@@ -36,7 +37,7 @@ export function WorkspacePage() {
     error,
     notice,
     busy,
-    canWrite,
+    canAdmin,
     selectTab,
     run,
     visibleTabs,
@@ -70,8 +71,10 @@ export function WorkspacePage() {
           >
             Refresh workspace
           </Button>
-          <Link to="/">Operations overview</Link>
-          <Link to="/features">Choose workspace features</Link>
+          <OperationsLink route="root">Operations overview</OperationsLink>
+          <OperationsLink route="features">
+            Choose workspace features
+          </OperationsLink>
           <Link to="/docs/default/component/ops-compass/guides/user-manual">
             User manual
           </Link>
@@ -112,7 +115,7 @@ export function WorkspacePage() {
                   select
                   label="Demo scenario"
                   value={data.activeScenario ?? ''}
-                  disabled={!canWrite}
+                  disabled={!canAdmin}
                   className={classes.field}
                   onChange={e =>
                     run(

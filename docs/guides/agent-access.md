@@ -10,6 +10,13 @@ outline, not a generated answer. It sends no data to a model provider. Connectin
 an external AI client can send tool results to that client's provider, so review
 the preview and your client's data policy before connecting private observations.
 
+## Workspace access
+
+In team mode, tools accept `workspaceId` and HTTP uses `X-Ops-Workspace`.
+The caller must be a member and the workspace's AI feature must be enabled.
+Local service tokens work only in personal mode; team clients need a delegated
+Backstage user identity. See [workspace access and migration](workspaces.md).
+
 ## Start a local connection
 
 Enable **AI agent interface** in **Workspace features** first. New main workspaces

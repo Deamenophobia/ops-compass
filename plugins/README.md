@@ -1,5 +1,6 @@
-# Operations packages
+# Frontend and feature plugins
 
+- `ops-compass-core/`: workspace selection and administration, independent of optional operations pages.
 - `operations/`: React pages, feature panels and authenticated API access.
 - `operations-backend/`: source adapters, HTTP/MCP handlers and persistent journal.
 - `operations-common/`: schemas, shared types and evidence freshness evaluation.

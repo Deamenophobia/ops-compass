@@ -1,8 +1,8 @@
+import { OperationsLink } from './OperationsLink';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Content,
   Header,
-  Link,
   Page,
   Progress,
   ResponseErrorPanel,
@@ -80,7 +80,9 @@ export function InventoryPage() {
             value={query}
             onChange={e => setQuery(e.target.value)}
           />
-          <Link to="/connections">Set up a connection</Link>
+          <OperationsLink route="connections">
+            Set up a connection
+          </OperationsLink>
         </div>
         {loading && <Progress />}
         {error && <ResponseErrorPanel error={error} />}
@@ -146,9 +148,9 @@ export function InventoryPage() {
                         {i.serviceIds.join(', ') ||
                           'No service mapping supplied'}
                       </Typography>
-                      <Link to="/workspace">
+                      <OperationsLink route="workspace">
                         Inspect service containers and deployed revisions
-                      </Link>
+                      </OperationsLink>
                     </Paper>
                   </Grid>
                 ))}

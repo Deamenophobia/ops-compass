@@ -15,3 +15,10 @@ Potential follow-up work is driven by actual use:
 
 These are possible future changes, not shipped capabilities. No autonomous
 remediation or trading control is part of the current project.
+
+## Modular core and team workspaces
+
+The next preview includes internal core packages, a native Backstage permission
+policy, administrator/user membership, workspace switching and scoped operational
+storage. Personal and team profiles share one release. Catalog and handbook remain
+shared within a trusted installation. See [Workspaces](guides/workspaces.md).
